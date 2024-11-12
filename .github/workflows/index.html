@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
+        <link href="./css/main.css" rel="stylesheet" />
+        <title>Pagina Setup - Projecte 3 - Aplicació Interactiva</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+        <script type="importmap">
+          {
+            "imports": {
+              "@material/web/": "https://esm.run/@material/web/"
+            }
+          }
+        </script>
+        <script type="module">
+          import '@material/web/all.js';
+          import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+      
+          document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>MAIN</h1>
+            <nav>
+              <md-tabs>
+                <md-primary-tab onclick="window.location.href = 'setup.html';">
+                  <md-icon slot="icon">settings</md-icon>
+                  Setup</md-primary-tab>
+                <md-primary-tab active onclick="window.location.href = 'index.html';">
+                  <md-icon slot="icon">star</md-icon>
+                  Partit</md-primary-tab>
+                <md-primary-tab onclick="window.location.href = 'resum.html';">
+                  <md-icon slot="icon">history</md-icon>
+                  Resum</md-primary-tab>
+              </md-tabs>
+            </nav>
+        </header>
+        <main>
+          <div id="temps" class="row alignCenter sizeBig">
+            <div id="timer" class="lightRound outlined">
+              <span>00:00</span></div>
+          </div>
+          <div id="equips" class="row alignCenter sizeBig ">
+            <div id="equip1" class="lightRound outlined flex">
+              <span class="alignCenter">Nom Equip 1</span>
+            </div>
+            <div id="resultat" class="lightRound outlined sizeBigger">
+              <span>0 - 0</span>
+            </div>
+            <div id="equip2" class="lightRound outlined flex">
+              <span class="alignCenter">Nom Equip 2</span>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 0; padding-top: 0;">
+            <div class="meitatHoritzontal flex column wrap alignEnd" style="margin-top: 0; padding-top: 0;">
+              <p>Entrenador 1</p>
+              <md-list class="alineacio">
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">1</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">5</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">12</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">2</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">3</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">11</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">6</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">15</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">8</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">10</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">9</div>
+                </md-list-item>
+              </md-list>
+              <md-filled-button class="widthMeitat">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
+
+            </div>
+            <div class="meitatHoritzontal flex column wrap aligStart" style="margin-top: 0; padding-top: 0;">
+              <p>entrenador 2</p>
+              <md-list class="alineacio">
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">1</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">5</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">12</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">2</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">3</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">11</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">6</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">15</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">8</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">10</div>
+                </md-list-item>
+                <md-list-item>
+                  <div slot="headline">Nom jugador</div>
+                  <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;">9</div>
+                </md-list-item>
+              </md-list>
+              <md-filled-button class="widthMeitat">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
+            </div>
+          </div>
+        </main>    
+    </body>
+</html>
