@@ -68,6 +68,15 @@ h2 {
 
 .column {
   flex-direction: column;
+  gap: 0.3em;
+}
+
+.gap1{
+  gap: 2em;
+}
+
+.gap1 {
+  gap: 1em;
 }
 
 .lightRound {
@@ -98,7 +107,7 @@ h2 {
   justify-content: center;
 }
 
-main {
+article {
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -202,6 +211,47 @@ md-list-item:nth-child(even) {
   background-color: var(--color-50);
 }
 
+#form-accio {
+  padding-top: 8px;
+}
+
+md-radio:checked+label{ background-color: #FFFF00; } ​
+
 .widthMeitat {
   margin: 1em;
+}
+
+.resum {
+  list-style: none;
+  padding: 0;
+  width: 75vh;
+}
+
+.resum li{
+  padding: 0 2vh;
+  margin-bottom: 2px;
+  height: 2.5em;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--accent-100);
+  align-content: center;
+  align-items: center;
+  border-radius: 20px;
+}
+.resum li:nth-child(even){
+  display: flex;
+  background-color: var(--color-50);
+}
+
+.icona {
+  vertical-align: middle;
+  flex: 1;
+}
+
+.dorsal {
+  flex: 1.5;
+}
+
+.jugador {
+  flex: 10;
 }
