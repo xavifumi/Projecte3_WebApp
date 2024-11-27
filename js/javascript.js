@@ -21,8 +21,7 @@ var primeraPart = true;
 
 //Setup
 var emmagatzematgeEquips = [];
-var equip1 = {};
-var equip2 = {};
+var equipsSeleccionats = [];
 
 function startTimer(){
     if(!running){
@@ -94,10 +93,16 @@ function startTimer(){
     <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
     </md-outlined-text-field>`;
     llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
+    if (desti == 'form-editar'){
+      let botoDesaEquip = document.querySelector('#editarEquip #accept');
+      botoDesaEquip.getAttribute('onclick');
+      actualitzaEquip(botoDesaEquip.getAttribute('onclick').substr(16,botoDesaEquip.getAttribute('onclick').length-17));
+      generaGraellaEquips();
+    }
   }
 
   function desaEquip(){
-    emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
+    //emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
     let llistaJugadorsForm = document.querySelectorAll('#afegirEquip .introJugador');
     let llistaJugadors = {};
     let equip = {};
@@ -134,9 +139,10 @@ function startTimer(){
   function generaGraellaEquips(){
     let equipsDesats = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
     let graellaEquips = document.getElementById('graellaEquips');
+    graellaEquips.innerHTML = "";
     for (let[index, equips] of equipsDesats.entries()){
       let nouElement = document.createElement('div');
-      nouElement.id = 'tarjaEquip';
+      nouElement.id = 'tarjaEquip_'+index;
       nouElement.classList.add('tarjaEquip');
       nouElement.innerHTML = `<img src="" alt="">
         <div>
@@ -153,55 +159,45 @@ function startTimer(){
   //Modificació d'equips ja creats:
 
   function generaDialogEquip(num){
-    dialogEditarEquip.innerHTML = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
-    </md-outlined-text-field>
-    <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
-      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
-      </md-outlined-text-field>
-      
-      <md-filled-button id="botoAfegirNouJugador" onclick="afegirJugador('form-editar')">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
-    </form>
-    <div slot="actions">
-      <md-text-button id="accept" form="form-id">Ok</md-text-button>
-      <md-text-button form="form-id" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
-    </div>`;
-    let botoAfegirJugador = document.querySelector('#editarEquip #botoAfegirNouJugador');
-    let llistaJugadors = document.querySelector('#editarEquip #form-editar');
-    let botoDesaEquip = document.querySelector('#editarEquip #accept');
-    botoDesaEquip.setAttribute("onclick", "actualitzaEquip("+num+")")
     let equipsDesats = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
     let equip = equipsDesats[num];
-    dialogEditarEquip.querySelector('#nomEquipEditar').value = equip.nom;
-    dialogEditarEquip.querySelector('#nomEntrenadorEditar').value = equip.entrenador;
-    for (jugador in equip.jugadors){
-      let nouElement = document.createElement('div');
-      //nouElement.id = 'introJugador';
-      nouElement.classList.add('flex', 'row', 'introJugador');
-      nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="`+jugador[0]+`" placeholder="00" type="text" minlength="1">
+
+    if ( equip.nom !== document.getElementById('nomEquipEditar').value){
+      dialogEditarEquip.innerHTML = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+      </md-outlined-text-field>
+      <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
+        <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
+        </md-outlined-text-field> 
+        <md-filled-button id="botoAfegirNouJugador" onclick="afegirJugador('form-editar')">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
+      </form>
+      <div slot="actions">
+        <md-text-button id="accept" form="form-id">Ok</md-text-button>
+        <md-text-button form="form-id" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
+      </div>`;
+      
+      let botoAfegirJugador = document.querySelector('#editarEquip #botoAfegirNouJugador');
+      let llistaJugadors = document.querySelector('#editarEquip #form-editar');
+      let botoDesaEquip = document.querySelector('#editarEquip #accept');
+      
+      botoDesaEquip.setAttribute("onclick", "actualitzaEquip("+num+")");
+      dialogEditarEquip.querySelector('#nomEquipEditar').value = equip.nom;
+      dialogEditarEquip.querySelector('#nomEntrenadorEditar').value = equip.entrenador;
+      for (jugador in equip.jugadors){
+        let nouElement = document.createElement('div');
+        //nouElement.id = 'introJugador';
+        nouElement.classList.add('flex', 'row', 'introJugador');
+        nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="`+jugador[0]+`" placeholder="00" type="text" minlength="1">
         </md-outlined-text-field>
         <md-outlined-text-field class="jugador" label="Jugador" value="`+equip.jugadors[jugador]+`" placeholder="Nom Jugador" type="text" minlength="1">
         </md-outlined-text-field>`;
-    llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
+        llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
+      }
     }
     dialogEditarEquip.show();
   }
-/* 
-    function afegirJugador(){
-    let llistaJugadors = document.getElementById('form-jugadors');
-    let botoAfegirJugador = document.getElementById('botoAfegirNouJugador');
-    let nouElement = document.createElement('div');
-    //nouElement.id = 'introJugador';
-    nouElement.classList.add('flex', 'row', 'introJugador')
-    nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
-    </md-outlined-text-field>
-    <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
-    </md-outlined-text-field>`;
-    llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
-    }
-    */
 
   function actualitzaEquip(num){
-    emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
+    //emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
     let llistaJugadorsForm = document.querySelectorAll('#editarEquip .introJugador');
     let llistaJugadors = {};
     let equip = {};
@@ -214,7 +210,7 @@ function startTimer(){
     emmagatzematgeEquips[num] = equip;
     dialogEditarEquip.close();
     localStorage.equips = JSON.stringify(emmagatzematgeEquips);
-    dialogEditarEquip.innerHTML = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+    /* dialogEditarEquip.innerHTML = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
     </md-outlined-text-field>
     <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
       <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
@@ -225,5 +221,39 @@ function startTimer(){
     <div slot="actions">
       <md-text-button id="accept" form="form-id">Ok</md-text-button>
       <md-text-button form="form-id" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
-    </div>`;
+    </div>`;*/
+    document.getElementById('graellaEquips').innerHTML = "";
+    generaGraellaEquips(); 
   }
+
+
+
+  // PAG MAIN
+
+  function llistaEquips(){
+    let llistaEquipLocal = document.getElementById('equipLocal');
+    let llistaEquipVisitant = document.getElementById('equipVisitant');
+    for (equip in emmagatzematgeEquips){
+      let nouElement = document.createElement('md-select-option');
+      nouElement.setAttribute('value', equip);
+      //console.log(equip + " - " + emmagatzematgeEquips[equip].nom);
+      nouElement.innerHTML = `<div slot="headline">` + emmagatzematgeEquips[equip].nom + `</div>`;
+      let nouElement2 = nouElement.cloneNode(true);
+      llistaEquipVisitant.appendChild(nouElement);
+      llistaEquipLocal.appendChild(nouElement2);
+    }
+  }
+
+  function seleccioEquips(num){
+    let equipTemporal = document.getElementById(num==0?'equipLocal':'equipVisitant').value;
+    let counter = 0;
+    equipsSeleccionats[num] = emmagatzematgeEquips[equipTemporal];
+    for (let [index, jugador] of Object.entries(equipsSeleccionats[num].jugadors)){
+      console.log(index + " - " + jugador + " - " +equipsSeleccionats[num].jugadors[jugador]);
+      document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[0].innerHTML = jugador;
+      document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[1].innerHTML = index;
+      counter += 1;
+    }
+  }
+
+  function jugadorsAccio(){}
