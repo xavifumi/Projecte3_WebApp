@@ -84,6 +84,7 @@ function startTimer(){
   // Pagina SETUP
   //Introducció de Jugadors i creacio de la graella de la base de dades d'equips.
   function afegirJugador(desti){
+    if (event) event.preventDefault();
     let llistaJugadors = document.getElementById(desti);
     let botoAfegirJugador = llistaJugadors.querySelector('#botoAfegirNouJugador');
     let nouElement = document.createElement('div');
@@ -91,7 +92,8 @@ function startTimer(){
     nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
     </md-outlined-text-field>
     <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
-    </md-outlined-text-field>`;
+    </md-outlined-text-field>
+    <md-checkbox touch-target="wrapper"></md-checkbox>`;
     llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
     if (desti == 'form-editar'){
       let botoDesaEquip = document.querySelector('#editarEquip #accept');
@@ -124,12 +126,15 @@ function startTimer(){
         </md-outlined-text-field>
         <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
         </md-outlined-text-field>
+        <md-checkbox touch-target="wrapper"></md-checkbox>
       </div>
-      <md-filled-button id="botoAfegirNouJugador" onclick="afegirJugador()">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
+      <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
+        Afegeix
+      <md-icon slot="icon">add</md-icon></md-filled-button>
     </form>
     <div slot="actions">
-      <md-text-button form="form-id" onclick="desaEquip()">Ok</md-text-button>
-      <md-text-button form="form-id" onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
+      <md-text-button form="form-jugadors" onclick="desaEquip()">Ok</md-text-button>
+      <md-text-button onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
     </div>`;
     localStorage.equips = JSON.stringify(emmagatzematgeEquips);
     document.getElementById('graellaEquips').innerHTML = "";
@@ -168,11 +173,13 @@ function startTimer(){
       <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
         <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
         </md-outlined-text-field> 
-        <md-filled-button id="botoAfegirNouJugador" onclick="afegirJugador('form-editar')">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
+        <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-editar')">
+          Afegeix
+        <md-icon slot="icon">add</md-icon></md-filled-button>
       </form>
       <div slot="actions">
-        <md-text-button id="accept" form="form-id">Ok</md-text-button>
-        <md-text-button form="form-id" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
+        <md-text-button id="accept" form="form-editar">Ok</md-text-button>
+        <md-text-button onclick="dialogEditarEquip.close()">Cancel</md-text-button>
       </div>`;
       
       let botoAfegirJugador = document.querySelector('#editarEquip #botoAfegirNouJugador');
@@ -189,7 +196,8 @@ function startTimer(){
         nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="`+jugador[0]+`" placeholder="00" type="text" minlength="1">
         </md-outlined-text-field>
         <md-outlined-text-field class="jugador" label="Jugador" value="`+equip.jugadors[jugador]+`" placeholder="Nom Jugador" type="text" minlength="1">
-        </md-outlined-text-field>`;
+        </md-outlined-text-field>
+        <md-checkbox touch-target="wrapper"></md-checkbox>`;
         llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
       }
     }
@@ -256,4 +264,6 @@ function startTimer(){
     }
   }
 
-  function jugadorsAccio(){}
+  function jugadorsAccio(num){
+    equipsSeleccionats[num];
+  }

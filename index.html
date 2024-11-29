@@ -52,10 +52,10 @@
                   <span data-chronometer>00:00</span>
                 </div>
               </div>
-              <md-fab onclick="startTimer(); psTimer.style.display='inline-flex'; stTimer.style.display='none'" id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
+              <md-fab onclick="startTimer()"; psTimer.style.display='inline-flex'; stTimer.style.display='none'" id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
                 <md-icon slot="icon">play_arrow</md-icon>
               </md-fab>
-              <md-fab onclick="pauseTimer(); psTimer.style.display='none'; stTimer.style.display='inline-flex'" id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
+              <md-fab onclick="pauseTimer()"; psTimer.style.display='none'; stTimer.style.display='inline-flex'" id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
                 <md-icon slot="icon">pause</md-icon>
               </md-fab>
             </div>
@@ -66,6 +66,9 @@
                   <span class="alignCenter">Nom Equip 1</span>
                 </div>
               -->
+              <md-fab onclick=""; id="play" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
+                <md-icon slot="icon">person_add</md-icon>
+              </md-fab>
               <md-outlined-select id="equipLocal" label="Equip Local" onchange="seleccioEquips('0')">
               </md-outlined-select>
               <div id="resultat" class="lightRound outlined sizeBigger">
@@ -78,6 +81,9 @@
               -->
               <md-outlined-select id="equipVisitant" label="Equip Visitant" onchange="seleccioEquips('1')">
               </md-outlined-select>
+              <md-fab onclick=""; id="play" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
+                <md-icon slot="icon">person_add</md-icon>
+              </md-fab>
             </div>
             <div class="row" style="margin-top: 0; padding-top: 0;">
               <div class="meitatHoritzontal flex column wrap alignEnd" style="margin-top: 0; padding-top: 0;">
@@ -337,7 +343,7 @@
         <md-dialog id="afegirEquip">
           <md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
           </md-outlined-text-field>
-          <form slot="content" id="form-jugadors" method="dialog" class="flex column gap1"> 
+          <form slot="content" id="form-jugadors"  class="flex column gap1"> 
             <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
             </md-outlined-text-field>
             <div class="flex row introJugador" >
@@ -345,12 +351,16 @@
               </md-outlined-text-field>
               <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
               </md-outlined-text-field>
+              <md-checkbox touch-target="wrapper"></md-checkbox>
             </div>
-            <md-filled-button id="botoAfegirNouJugador" onclick="afegirJugador('form-jugadors')">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
+            <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
+              Afegeix
+              <md-icon slot="icon">add</md-icon>
+            </md-filled-button>
           </form>
           <div slot="actions">
-            <md-text-button form="form-id" onclick="desaEquip()">Ok</md-text-button>
-            <md-text-button form="form-id" onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
+            <md-text-button type= "submit" id="accept" form="form-jugadors" onclick="desaEquip()">Ok</md-text-button>
+            <md-text-button onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
           </div>
         </md-dialog>
         <script> 
@@ -358,27 +368,31 @@
         </script> 
 
 
-        <md-dialog id="editarEquip">
-          <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
-          </md-outlined-text-field>
-          <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
-            <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
-            </md-outlined-text-field> 
-            <md-filled-button id="botoAfegirNouJugador" onclick="afegirJugador('form-editar')">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
-          </form>
-          <div slot="actions">
-            <md-text-button id="accept" form="form-id">Ok</md-text-button>
-            <md-text-button form="form-id" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
-          </div>
-        </md-dialog>
-        <script> let dialogEditarEquip = document.getElementById("editarEquip")</script>
-        
-
-        <md-dialog id="afegirAccio">
-            <md-tabs slot="headline">
-              <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = true">
-                <span slot="icon">⚽</span>
-                Gol</md-primary-tab>
+  <md-dialog id="editarEquip">
+    <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+    </md-outlined-text-field>
+    <form slot="content" id="form-editar" class="flex column gap1"> 
+      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
+      </md-outlined-text-field> 
+      <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-editar')">
+        Afegeix
+        <md-icon slot="icon">add</md-icon></md-filled-button>
+      </form>
+      <div slot="actions">
+        <md-text-button type= "submit" id="accept" form="form-editar" onclick="actualitzaEqui()">Ok</md-text-button>
+        <md-text-button onclick="dialogEditarEquip.close()">Cancel</md-text-button>
+      </div>
+    </md-dialog>
+    <script> 
+      let dialogEditarEquip = document.getElementById("editarEquip")
+    </script>
+    
+    
+    <md-dialog id="afegirAccio">
+      <md-tabs slot="headline">
+        <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = true">
+          <span slot="icon">⚽</span>
+          Gol</md-primary-tab>
               <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = true">
                 <span slot="icon">🟨</span>
                 Targeta</md-primary-tab>
