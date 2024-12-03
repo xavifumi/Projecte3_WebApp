@@ -255,3 +255,7 @@ md-radio:checked+label{ background-color: #FFFF00; } ​
 .jugador {
   flex: 10;
 }
+
+.amaga {
+  display: none;
+}

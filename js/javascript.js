@@ -22,6 +22,10 @@ var primeraPart = true;
 //Setup
 var emmagatzematgeEquips = [];
 var equipsSeleccionats = [];
+var jugadorsActius = [];
+var ipVmix;
+var dadesVmix;
+var llistaGrafismes = [];
 
 function startTimer(){
     if(!running){
@@ -257,13 +261,126 @@ function startTimer(){
     let counter = 0;
     equipsSeleccionats[num] = emmagatzematgeEquips[equipTemporal];
     for (let [index, jugador] of Object.entries(equipsSeleccionats[num].jugadors)){
-      console.log(index + " - " + jugador + " - " +equipsSeleccionats[num].jugadors[jugador]);
+      //console.log(index + " - " + jugador + " - " +equipsSeleccionats[num].jugadors[jugador]);
       document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[0].innerHTML = jugador;
       document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[1].innerHTML = index;
       counter += 1;
     }
+    document.getElementById('buttonAccio'+num).disabled = false;
+    document.getElementById('selectAccioEquip'+num).nextElementSibling.innerHTML = equipsSeleccionats[num].nom;
+    document.getElementById('entrenador'+num).innerHTML = equipsSeleccionats[num].entrenador;
+    jugadorsAccio(num);
+
   }
 
   function jugadorsAccio(num){
     equipsSeleccionats[num];
+    let counter = 0;
+    let llistes = document.getElementsByClassName('selectJugador');
+    for (jugador in equipsSeleccionats[num].jugadors){
+      console.log(jugador+ " - " + equipsSeleccionats[num].jugadors[jugador]);
+      jugadorsActius[parseInt(num)*11+parseInt(counter)]= jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
+      llistes[0].children[parseInt(num)*11+parseInt(counter)].innerHTML = jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
+      llistes[0].children[parseInt(num)*11+parseInt(counter)].value = jugador;
+      //La segona llista ha de ser dels no sel·leccionats
+      llistes[1].children[parseInt(num)*11+parseInt(counter)].innerHTML = jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
+      llistes[1].children[parseInt(num)*11+parseInt(counter)].value = jugador;
+      counter += 1;
+    }
   }
+
+  function filtraJugadorsAccio(classe){
+    let seleccionats = document.querySelectorAll('.'+classe);
+    //console.log('.'+classe);
+    //console.log(seleccionats);
+    let deseleccionats = document.querySelectorAll('.'+ (classe=='llistaJugadorsEquip0'?'llistaJugadorsEquip1':'llistaJugadorsEquip0'));
+    //console.log('.'+ (classe=='llistaJugadorsEquip0'?'llistaJugadorsEquip1':'llistaJugadorsEquip0'));
+    //console.log(deseleccionats);
+    deseleccionats.forEach(element => {
+      element.classList.add('amaga'); 
+    });
+    seleccionats.forEach(element => {
+      element.classList.remove('amaga'); 
+    });
+  }
+
+  async function obtenirDadesVmix(ipVmix) {
+    const url = `http://${ipVmix}/api`;
+
+    try {
+        const resposta = await fetch(url);
+        
+        if (!resposta.ok) {
+            throw new Error(`Error en la solicitud: ${resposta.status}`);
+        }
+
+        const textXML = await resposta.text();
+        const parser = new DOMParser(); 
+        dadesVmix = parser.parseFromString(textXML, "application/xml");
+
+        console.log(dadesVmix);
+    } catch (error) {
+        console.error("Error al obtener los datos de vMix:", error);
+    }
+
+    const inputs = dadesVmix.querySelectorAll("input");
+
+    // Filtrar los inputs que tengan type="GT"
+    const inputsGT = Array.from(inputs).filter(input => input.getAttribute("type") === "GT");
+
+    // Rellenar la variable llistaGrafismes con los resultados filtrados
+    llistaGrafismes = inputsGT.map(input => ({
+        key: input.getAttribute("key"),
+        title: input.getAttribute("title")
+    }));
+    afegirOpcionsGrafismes(llistaGrafismes)
+    }
+
+    function afegirOpcionsGrafismes(llistaGrafismes) {
+      // Seleccionar tots els <li> que continguin un <md-outlined-select>
+      const elementsSelect = document.querySelectorAll("#configuracioEscenes ul li md-outlined-select");
+  
+      elementsSelect.forEach(select => {
+          // Buidem el contingut anterior (opcional)
+          select.innerHTML = '';
+  
+          // Recórrer la llista de grafismes
+          llistaGrafismes.forEach(grafisme => {
+              // Crear l'element <md-select-option>
+              const option = document.createElement("md-select-option");
+              option.setAttribute("value", grafisme.key);
+  
+              // Crear el <div> amb el text del title
+              const div = document.createElement("div");
+              div.setAttribute("slot", "headline");
+              div.textContent = grafisme.title;
+  
+              // Inserir el <div> dins de <md-select-option>
+              option.appendChild(div);
+  
+              // Afegir l'opció al <md-outlined-select>
+              select.appendChild(option);
+          });
+      });
+   }
+
+   function desaDadesVmix(){
+    let temporalGrafismes = {};
+    temporalGrafismes['ip'] = ipVmix;
+    let temp = document.querySelectorAll('#configuracioEscenes ul li md-outlined-select');
+    temporalGrafismes['grafismeAlineacio'] =temp[0].value;
+      temporalGrafismes['grafismeGol'] = temp[1].value;
+      temporalGrafismes['grafismeTargeta'] = temp[2].value;
+      temporalGrafismes['grafismeCanvi'] = temp[3].value;
+      temporalGrafismes['grafismeFinal'] = temp[4].value;   
+    localStorage.vmix = JSON.stringify(temporalGrafismes);
+
+    }
+   
+  
+
+  
+
+
+
+  

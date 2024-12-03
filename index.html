@@ -87,7 +87,7 @@
             </div>
             <div class="row" style="margin-top: 0; padding-top: 0;">
               <div class="meitatHoritzontal flex column wrap alignEnd" style="margin-top: 0; padding-top: 0;">
-                <p>Entrenador 1</p>
+                <p id="entrenador0">Entrenador</p>
                 <md-list class="alineacio" id="alineacio0" >
                   <md-list-item>
                     <div slot="headline"></div>
@@ -134,11 +134,13 @@
                     <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
                   </md-list-item>
                 </md-list>
-                <md-filled-button id="button1" class="widthMeitat" onclick="document.getElementById('selectAccioEquip1').checked = true; dialog.show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
+                <md-filled-button id="buttonAccio0" class="widthMeitat" disabled onclick="
+                document.getElementById('selectAccioEquip0').checked = true; 
+                dialog.show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
   
               </div>
               <div class="meitatHoritzontal flex column wrap aligStart" style="margin-top: 0; padding-top: 0;">
-                <p>entrenador 2</p>
+                <p id="entrenador1" >Entrenador</p>
                 <md-list class="alineacio" id="alineacio1" >
                   <md-list-item>
                     <div slot="headline"></div>
@@ -185,7 +187,9 @@
                     <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
                   </md-list-item>
                 </md-list>
-                <md-filled-button class="widthMeitat" onclick="document.getElementById('selectAccioEquip2').checked = true; document.getElementById('afegirAccio').show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
+                <md-filled-button id="buttonAccio1" class="widthMeitat" disabled onclick="
+                document.getElementById('selectAccioEquip1').checked = true;
+                document.getElementById('afegirAccio').show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
               </div>
             </div>
           </article>
@@ -203,9 +207,9 @@
                   <h2>Configuració vMix:</h2>
                   <md-divider></md-divider>
                   <div id="connexioVMIX">
-                      <md-outlined-text-field label="IP vMix" value="xxx.xxx.xxx.xxx" type="text" minlength="7" maxlength="15" size="15" pattern="^(?>(\d|[1-9]\d{2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?1)$">
+                      <md-outlined-text-field label="IP vMix" id="inputIpVmix" value="" type="text" minlength="7" size="15" pattern="^(?>(\d|[1-9]\d{2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?1)$">
                       </md-outlined-text-field>
-                      <md-fab id="acceptConnection" class="alignCenter" size="small" touch-target="none" aria-label="Check">
+                      <md-fab id="acceptConnection" class="alignCenter" size="small" touch-target="none" aria-label="Check" onclick="ipVmix=document.getElementById('inputIpVmix').value;obtenirDadesVmix(ipVmix);">
                           <md-icon slot="icon">check</md-icon>
                       </md-fab>
                   </div>
@@ -214,52 +218,22 @@
                       <ul>
                           <li>
                               <md-outlined-select label="Grafisme alineació">
-                                  <md-select-option selected value="apple">
-                                    <div slot="headline">Apple</div>
-                                  </md-select-option>
-                                  <md-select-option value="apricot">
-                                    <div slot="headline">Apricot</div>
-                                  </md-select-option>
                                 </md-outlined-select>
                           </li>
                           <li>
                               <md-outlined-select label="Grafisme Gol">
-                                  <md-select-option selected value="apple">
-                                    <div slot="headline">Apple</div>
-                                  </md-select-option>
-                                  <md-select-option value="apricot">
-                                    <div slot="headline">Apricot</div>
-                                  </md-select-option>
                                 </md-outlined-select>
                           </li>
                           <li>
                               <md-outlined-select label="Grafisme Targeta">
-                                  <md-select-option selected value="apple">
-                                    <div slot="headline">Apple</div>
-                                  </md-select-option>
-                                  <md-select-option value="apricot">
-                                    <div slot="headline">Apricot</div>
-                                  </md-select-option>
                                 </md-outlined-select>
                           </li>
                           <li>
                               <md-outlined-select label="Grafisme Canvi">
-                                  <md-select-option selected value="apple">
-                                    <div slot="headline">Apple</div>
-                                  </md-select-option>
-                                  <md-select-option value="apricot">
-                                    <div slot="headline">Apricot</div>
-                                  </md-select-option>
                                 </md-outlined-select>
                           </li>
                           <li>
                               <md-outlined-select label="Grafisme final">
-                                  <md-select-option selected value="apple">
-                                    <div slot="headline">Apple</div>
-                                  </md-select-option>
-                                  <md-select-option value="apricot">
-                                    <div slot="headline">Apricot</div>
-                                  </md-select-option>
                                 </md-outlined-select>
                           </li>
                       </ul>
@@ -406,27 +380,148 @@
             <form slot="content" id="form-accio" method="dialog" >
               <div class="flex column gap1">
                 <div>
-                  <md-radio id="selectAccioEquip1" name="animals" value="equip1" aria-label="Acció de equip local" checked></md-radio>
-                    <label for="selectAccioEquip1">Equip 1</label>
+                  <md-radio id="selectAccioEquip0" name="selectEquipAccio" value="equip0" aria-label="Acció de equip local" checked onclick="filtraJugadorsAccio('llistaJugadorsEquip0')"></md-radio>
+                    <label for="selectAccioEquip0">Equip 1</label>
                 </div>
                 <div>
-                  <md-radio id="selectAccioEquip2" name="animals" value="equip2" aria-label="Acció de equip visitant"></md-radio>
-                  <label for="selectAccioEquip2">Equip 2</label>        
+                  <md-radio id="selectAccioEquip1" name="selectEquipAccio" value="equip1" aria-label="Acció de equip visitant" onclick="filtraJugadorsAccio('llistaJugadorsEquip1')"></md-radio>
+                  <label for="selectAccioEquip1">Equip 2</label>        
                 </div>
-                <md-outlined-select label="Jugador" id="selectJugador1">
-                  <md-select-option selected value="convocat1">
-                    <div slot="headline">Apple</div>
+                <md-outlined-select label="Sel·lecciona jugador" id="selectJugador1" class="selectJugador">
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
                   </md-select-option>
-                  <md-select-option value="apricot">
-                    <div slot="headline">Apricot</div>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
                   </md-select-option>
                 </md-outlined-select>
-                <md-outlined-select label="Jugador sortida" id="selectJugador2" disabled>
-                  <md-select-option selected value="convocat2">
-                    <div slot="headline">Apple</div>
+
+                <md-outlined-select label="Jugador sortida" id="selectJugador2" disabled class="selectJugador">
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
                   </md-select-option>
-                  <md-select-option value="apricot">
-                    <div slot="headline">Apricot</div>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip0" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
+                  </md-select-option>
+                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
+                    <div slot="headline"></div>
                   </md-select-option>
                 </md-outlined-select>
               </div>
