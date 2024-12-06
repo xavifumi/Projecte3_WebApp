@@ -250,11 +250,7 @@
             </div>
           </article>
           <script>
-            document.addEventListener("DOMContentLoaded", (event) => {
-              window.onload = generaGraellaEquips();
-              emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
-              llistaEquips();
-            });
+
             
           </script>
 
@@ -283,24 +279,27 @@
           </div>
           <div class="flex alignCenter">
             <ul class="resum flex column">
-              <li>
-                <span class="timecode">5'</span>
-                <span class="icona">⚽</span>
-                <span class="jugador">Jugador1</span>
-                <span class="resultat">0-1</span>
-                <span class="icona"></span>
-                <span class="jugador"></span>
-                <md-icon slot="icon">Cancel</md-icon>
-              </li>
-              <li>
-                <span class="timecode">5'</span>
-                <span class="icona"></span>
-                <span class="jugador"></span>
-                <span class="resultat">1-1</span>
-                <span class="icona">⚽</span>
-                <span class="jugador">Jugador2</span>
-                <md-icon slot="icon">Cancel</md-icon>
-              </li>
+              <!--
+
+                <li>
+                  <span class="timecode">5'</span>
+                  <span class="icona">⚽</span>
+                  <span class="jugador">Jugador1</span>
+                  <span class="resultat">0-1</span>
+                  <span class="icona"></span>
+                  <span class="jugador"></span>
+                  <md-icon slot="icon">Cancel</md-icon>
+                </li>
+                <li>
+                  <span class="timecode">5'</span>
+                  <span class="icona"></span>
+                  <span class="jugador"></span>
+                  <span class="resultat">1-1</span>
+                  <span class="icona">⚽</span>
+                  <span class="jugador">Jugador2</span>
+                  <md-icon slot="icon">Cancel</md-icon>
+                </li>
+              -->
               
             </ul>
           </div>
@@ -353,7 +352,7 @@
         <md-icon slot="icon">add</md-icon></md-filled-button>
       </form>
       <div slot="actions">
-        <md-text-button type= "submit" id="accept" form="form-editar" onclick="actualitzaEqui()">Ok</md-text-button>
+        <md-text-button type= "submit" id="accept" form="form-editar" onclick="actualitzaEquip()">Ok</md-text-button>
         <md-text-button onclick="dialogEditarEquip.close()">Cancel</md-text-button>
       </div>
     </md-dialog>
@@ -364,19 +363,23 @@
     
     <md-dialog id="afegirAccio">
       <md-tabs slot="headline">
-        <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = true">
+        <md-primary-tab onclick="accioGol()">
           <span slot="icon">⚽</span>
-          Gol</md-primary-tab>
-              <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = true">
-                <span slot="icon">🟨</span>
-                Targeta</md-primary-tab>
-              <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = false">
-                <span slot="icon">🔃</span>
-                Canvi</md-primary-tab>
-              <md-primary-tab onclick="document.getElementById('selectJugador2').disabled = true">
-                <span slot="icon">🚑</span>
-                Lesió</md-primary-tab>
-            </md-tabs>
+          Gol
+        </md-primary-tab>
+        <md-primary-tab onclick="accioTargeta()">
+          <span slot="icon">🟨</span>
+          Targeta
+        </md-primary-tab>
+        <md-primary-tab onclick="accioCanvi()">
+          <span slot="icon">🔃</span>
+          Canvi
+        </md-primary-tab>
+        <md-primary-tab onclick="accioGol()">
+          <span slot="icon">🚑</span>
+          Lesió
+        </md-primary-tab>
+      </md-tabs>
             <form slot="content" id="form-accio" method="dialog" >
               <div class="flex column gap1">
                 <div>
@@ -456,7 +459,7 @@
                   </md-select-option>
                 </md-outlined-select>
 
-                <md-outlined-select label="Jugador sortida" id="selectJugador2" disabled class="selectJugador">
+                <md-outlined-select label="Jugador sortida" id="selectJugador2" class="selectJugador amaga">
                   <md-select-option class="llistaJugadorsEquip0" value="">
                     <div slot="headline"></div>
                   </md-select-option>
@@ -524,6 +527,14 @@
                     <div slot="headline"></div>
                   </md-select-option>
                 </md-outlined-select>
+                <div>
+                  <md-radio id="selectTargetaGroga" class="selectTargeta amaga" name="selectTargeta" value="1" aria-label="Targeta groga" checked onclick=""></md-radio>
+                    <label for="selectTargetaGroga" class="selectTargeta amaga">Tarja Groga</label>
+                </div>
+                <div>
+                  <md-radio id="selectTargetaVermella" class="selectTargeta amaga" name="selectTargeta" value="2" aria-label="Targeta vermella" onclick=""></md-radio>
+                  <label for="selectTargetaVermella" class="selectTargeta amaga">Tarja Vermella</label>        
+                </div>
               </div>
             </form>
             <div slot="actions">
