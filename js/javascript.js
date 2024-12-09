@@ -45,7 +45,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
   grafismesSeleccionats[3] = JSON.parse(localStorage.vmix).grafismeCanvi;   
   grafismesSeleccionats[4] = JSON.parse(localStorage.vmix).grafismeFinal;
   resumPartit = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
+  //'equipLocal':'equipVisitant'
   llistaEquips();
+  document.getElementById('equipLocal').value = localStorage[0];
+  seleccioEquips(0);
+  document.getElementById('equipVisitant').value = localStorage[1];
+  seleccioEquips(1);
   generaGraellaResum();
 
 });
@@ -293,6 +298,7 @@ function seleccioEquips(num){
   document.getElementById('selectAccioEquip'+num).nextElementSibling.innerHTML = equipsSeleccionats[num].nom;
   document.getElementById('entrenador'+num).innerHTML = equipsSeleccionats[num].entrenador;
   jugadorsAccio(num);
+  localStorage[num] = equipTemporal;
 
 }
 
@@ -539,9 +545,6 @@ function generaGraellaResum(){
     accions.tipus=='gol'?accions.equipAccio==0?golsLocal +=1:golsVisitant +=1:"";
     let nouElement = document.createElement('li');
     nouElement.id = 'accio_'+index;
-    //nouElement.classList.add('tarjaEquip');
-    console.log(accions.equipAccio);
-    console.log(equipsSeleccionats[accions.equipAccio]);
     nouElement.innerHTML = `
     <span class="timecode">${accions.timecode}</span>
     <span class="icona">${accions.equipAccio==0?generaIcones(accions.tipus):""}</span>
