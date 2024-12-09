@@ -238,7 +238,7 @@
                           </li>
                       </ul>
                     </div>
-                    <md-filled-button class="final">Desa<md-icon slot="icon">save</md-icon></md-filled-button>
+                    <md-filled-button class="final" onclick="desaDadesVmix()">Desa<md-icon slot="icon">save</md-icon></md-filled-button>
               </div>
               <div class="meitatHoritzontal dosColors">
                   <h2>Configuració Equips:</h2>
@@ -278,7 +278,7 @@
             </div>
           </div>
           <div class="flex alignCenter">
-            <ul class="resum flex column">
+            <ul class="resum flex column" id="graellaResum">
               <!--
 
                 <li>
@@ -375,7 +375,7 @@
           <span slot="icon">🔃</span>
           Canvi
         </md-primary-tab>
-        <md-primary-tab onclick="accioGol()">
+        <md-primary-tab onclick="accioLesio()">
           <span slot="icon">🚑</span>
           Lesió
         </md-primary-tab>
@@ -383,11 +383,11 @@
             <form slot="content" id="form-accio" method="dialog" >
               <div class="flex column gap1">
                 <div>
-                  <md-radio id="selectAccioEquip0" name="selectEquipAccio" value="equip0" aria-label="Acció de equip local" checked onclick="filtraJugadorsAccio('llistaJugadorsEquip0')"></md-radio>
+                  <md-radio id="selectAccioEquip0" name="selectEquipAccio" value="0" aria-label="Acció de equip local"  onclick="filtraJugadorsAccio('llistaJugadorsEquip0')"></md-radio>
                     <label for="selectAccioEquip0">Equip 1</label>
                 </div>
                 <div>
-                  <md-radio id="selectAccioEquip1" name="selectEquipAccio" value="equip1" aria-label="Acció de equip visitant" onclick="filtraJugadorsAccio('llistaJugadorsEquip1')"></md-radio>
+                  <md-radio id="selectAccioEquip1" name="selectEquipAccio" value="1" aria-label="Acció de equip visitant" onclick="filtraJugadorsAccio('llistaJugadorsEquip1')"></md-radio>
                   <label for="selectAccioEquip1">Equip 2</label>        
                 </div>
                 <md-outlined-select label="Sel·lecciona jugador" id="selectJugador1" class="selectJugador">
@@ -538,7 +538,7 @@
               </div>
             </form>
             <div slot="actions">
-              <md-text-button form="form-id">Ok</md-text-button>
+              <md-text-button form="form-id" onclick="desaAccio()">Ok</md-text-button>
               <md-text-button form="form-id" onclick="dialog.close()">Cancel</md-text-button>
             </div>
         </md-dialog> 

@@ -20,21 +20,33 @@ var currentTime = 0;
 var primeraPart = true;
 
 //Setup
-var emmagatzematgeEquips = [];
-var equipsSeleccionats = [];
-var jugadorsActius = [];
-var ipVmix;
-var dadesVmix;
-var llistaGrafismes = [];
-var resumPartit = [];
+var equips = [];
+var emmagatzematgeEquips = []; //Dades equips desats
+var equipsSeleccionats = []; //Dades dels dos equips seleccionats
+var jugadorsActius = []; //Jugadors sobre el camp
+var ipVmix; //adreça del vMix
+var dadesVmix; //Info rebuda de l'API en XML
+var llistaGrafismes = []; //llista de grafismes detectats al vMix per a seleccionar
+var grafismesSeleccionats = []; //info dels grafismes seleccionats per a vincular amb les dades
+var resumPartit = []; //accions que s'han desat durant el partit
 var accio = "gol";
 
+
+//Accions a realitzar en carregar la pàgina:
 document.addEventListener("DOMContentLoaded", (event) => {
   window.onload = generaGraellaEquips();
   emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
-  ipVmix = localStorage.vmix===undefined?"":JSON.parse(localStorage.vmix.ip);
-  //llistaGrafismes[];
+  ipVmix = localStorage.vmix===undefined?"":JSON.parse(localStorage.vmix).ip;
+  document.getElementById('inputIpVmix').value = ipVmix;
+  //  let selectorsDeGrafisme = document.querySelectorAll()
+  grafismesSeleccionats[0] = JSON.parse(localStorage.vmix).grafismeAlineacio;
+  grafismesSeleccionats[1] = JSON.parse(localStorage.vmix).grafismeGol;
+  grafismesSeleccionats[2] = JSON.parse(localStorage.vmix).grafismeTargeta;
+  grafismesSeleccionats[3] = JSON.parse(localStorage.vmix).grafismeCanvi;   
+  grafismesSeleccionats[4] = JSON.parse(localStorage.vmix).grafismeFinal;
+  resumPartit = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
   llistaEquips();
+  generaGraellaResum();
 
 });
 
@@ -367,16 +379,22 @@ let temporalGrafismes = {};
 temporalGrafismes['ip'] = ipVmix;
 let temp = document.querySelectorAll('#configuracioEscenes ul li md-outlined-select');
 temporalGrafismes['grafismeAlineacio'] =temp[0].value;
-  temporalGrafismes['grafismeGol'] = temp[1].value;
-  temporalGrafismes['grafismeTargeta'] = temp[2].value;
-  temporalGrafismes['grafismeCanvi'] = temp[3].value;
-  temporalGrafismes['grafismeFinal'] = temp[4].value;   
+grafismesSeleccionats[0] = temp[0].value;
+temporalGrafismes['grafismeGol'] = temp[1].value;
+grafismesSeleccionats[1] = temp[1].value;
+temporalGrafismes['grafismeTargeta'] = temp[2].value;
+grafismesSeleccionats[2] = temp[2].value;
+temporalGrafismes['grafismeCanvi'] = temp[3].value;
+grafismesSeleccionats[3] = temp[3].value;
+temporalGrafismes['grafismeFinal'] = temp[4].value;   
+grafismesSeleccionats[4] = temp[4].value;
 localStorage.vmix = JSON.stringify(temporalGrafismes);
 }
 
 
 //Accions per modificar el dialog d'afegir acció
 function accioGol(){
+  accio='gol';
   document.getElementById('selectJugador2').classList.contains('amaga')?"":document.getElementById('selectJugador2').classList.add('amaga');
   document.querySelectorAll('.selectTargeta').forEach(element => {
     element.classList.contains('amaga')?"":element.classList.add('amaga');
@@ -384,6 +402,7 @@ function accioGol(){
 }
 
 function accioTargeta(){
+  accio='targeta;'
   document.getElementById('selectJugador2').classList.contains('amaga')?"":document.getElementById('selectJugador2').classList.add('amaga');
   document.querySelectorAll('.selectTargeta').forEach(element => {
     element.classList.contains('amaga')?element.classList.remove('amaga'):"";
@@ -391,44 +410,148 @@ function accioTargeta(){
 }
 
 function accioCanvi(){
+  accio='canvi';
   document.getElementById('selectJugador2').classList.contains('amaga')?document.getElementById('selectJugador2').classList.remove('amaga'):"";
   document.querySelectorAll('.selectTargeta').forEach(element => {
     element.classList.contains('amaga')?"":element.classList.add('amaga');
   });
 }
 
+function accuiLesio(){
+  accio='lesio';
+}
+
 function desaAccio(){
   let accioTemp = {};
-  accioTemp.timecode = minutes;
+  accioTemp.timecode = currentTime;
   accioTemp.equipAccio = document.getElementById('selectAccioEquip0').checked?'0':'1';
   accioTemp.tipus = accio;
   accioTemp.jugador0 = document.getElementById('selectJugador1').value;
   accioTemp.jugador1 = document.getElementById('selectJugador2').value;
-  localStorage.accions = JSON.stringify(accioTemp);
+  resumPartit.push(accioTemp);
+  localStorage.accions = JSON.stringify(resumPartit);
+
   llencaGrafisme();
+  generaGraellaResum();
 }
 
-function llencaGrafisme(){
+async function obtenirDadesVmix(ipVmix) {
+  //Aquesta funció l'he adaptat d'alguns fils de Stackoverflow. 
+  const url = `http://${ipVmix}/api`;
+  try {
+      const resposta = await fetch(url);       
+      if (!resposta.ok) {
+        throw new Error(`Error en la solicitud: ${resposta.status}`);
+      }
+      const textXML = await resposta.text();
+      const parser = new DOMParser(); 
+      dadesVmix = parser.parseFromString(textXML, "application/xml");
+  } catch (error) {
+      console.error("Error al obtener los datos de vMix:", error);
+      alert("Error al obtener los datos de vMix:\n"+ error);
+      return
+  }
+  const inputs = dadesVmix.querySelectorAll("input");
+  //Creem un array filtrant per l'atribut type
+  const inputsGT = Array.from(inputs).filter(input => input.getAttribute("type") === "GT");
+  llistaGrafismes = inputsGT.map(input => ({
+      key: input.getAttribute("key"),
+      title: input.getAttribute("title")
+  }));
+  afegirOpcionsGrafismes(llistaGrafismes);
+}
+
+async function llencaGrafisme(){
+  const url = `http://${ipVmix}/api`;
+  let equip = equipsSeleccionats[document.getElementById('selectAccioEquip0').checked?'0':'1'];
+  let jugadorOut = equip.jugadors[document.getElementById('selectJugador1').value];
+  
   switch(accio){
     case 'gol':
       break;
     case 'targeta':
+
       break;
-    case 'canvi':
+    case 'canvi':     
+      let jugadorIn = equip.jugadors[document.getElementById('selectJugador2').value];
+      let url1 = ''+url+'/?Function=SetText&Input='+grafismesSeleccionats[3].replace(/ /g, '%20')+'&Value='+jugadorIn.replace(/ /g, '%20')+'&SelectedName=On%20Name.Text';
+      let url2 = ''+url+'/?Function=SetText&Input='+grafismesSeleccionats[3].replace(/ /g, '%20')+'&Value='+jugadorOut.replace(/ /g, '%20')+'&SelectedName=Off%20Name.Text';
+      let url3 = ''+url+'/?Function=OverlayInput2&Input='+grafismesSeleccionats[3].replace(/ /g, '%20');
+      try {
+        console.log(url1)       
+        const resposta = await fetch(url1);
+        if (!resposta.ok) {
+          alert('Grafisme Targeta actualitzat!');
+          throw new Error(`Error en la solicitud: ${resposta.status}`);
+        }
+      } catch (error) {
+          alert("Error al obtener los datos de vMix:\n"+ error);
+          return
+      }
+      try {
+              
+        const resposta2 = await fetch(url2); 
+        if (!resposta2.ok) {
+          throw new Error(`Error en la solicitud: ${resposta2.status}`);
+        }
+      } catch (error) {
+        alert("Error al obtener los datos de vMix:\n"+ error);
+        return
+      }
+      alert('Grafisme Targeta actualitzat!');
+      try {
+        console.log(url3); 
+        const resposta3 = await fetch(url3);      
+        if (!resposta3.ok) {
+          throw new Error(`Error en la solicitud: ${resposta3.status}`);
+        }
+      } catch (error) {
+        alert("Error al obtener los datos de vMix:\n"+ error);
+        return
+      }
+      alert('Grafisme Targeta actualitzat!');
       break;
     case 'lesio':
       break;
   }
 }
-/* 
-<span class="timecode">5'</span>
-<span class="icona">⚽</span>
-<span class="jugador">Jugador1</span>
-<span class="resultat">0-1</span>
-<span class="icona"></span>
-<span class="jugador"></span>
-<md-icon slot="icon">Cancel</md-icon>
-*/
 
+function generaIcones(accio){
+  switch(accio){
+    case 'gol':
+      return '⚽'
+    case 'targeta':
+      return '🟨'
+    case 'canvi':
+      return '🔃'
+    case 'lesio':
+      return'🚑'
+  }
+}
+
+function generaGraellaResum(){
+  let accionsDesades = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
+  let graellaResum = document.getElementById('graellaResum');
+  graellaResum.innerHTML = "";
+  let golsLocal = 0;
+  let golsVisitant = 0;
+  for (let[index, accions] of accionsDesades.entries()){
+    accions.tipus=='gol'?accions.equipAccio==0?golsLocal +=1:golsVisitant +=1:"";
+    let nouElement = document.createElement('li');
+    nouElement.id = 'accio_'+index;
+    //nouElement.classList.add('tarjaEquip');
+    console.log(accions.equipAccio);
+    console.log(equipsSeleccionats[accions.equipAccio]);
+    nouElement.innerHTML = `
+    <span class="timecode">${accions.timecode}</span>
+    <span class="icona">${accions.equipAccio==0?generaIcones(accions.tipus):""}</span>
+    <span class="jugador">${accions.equipAccio==0?accions.tipus=='canvi'?equipsSeleccionats[0].jugadors[accions.jugador0] + " > "+equipsSeleccionats[0].jugadors[accions.jugador1]:equipsSeleccionats[0].jugadors[accions.jugador0]:""}</span>
+    <span class="resultat">${golsLocal}-${golsVisitant}</span>
+    <span class="icona">${accions.equipAccio==1?generaIcones(accions.tipus):""}</span>
+    <span class="jugador">${accions.equipAccio==1?accions.tipus=='canvi'?equipsSeleccionats[1].jugadors[accions.jugador0] + " > "+equipsSeleccionats[1].jugadors[accions.jugador1]:equipsSeleccionats[1].jugadors[accions.jugador0]:""}</span>
+    <md-icon slot="icon" onclick="editaAccio('${index}')">Cancel</md-icon>`
+    graellaResum.appendChild(nouElement);
+  }
+}
 
 
