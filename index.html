@@ -19,6 +19,7 @@
       
           document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
         </script>
+
     </head>
     <body>
         <header>
@@ -52,10 +53,10 @@
                   <span data-chronometer>00:00</span>
                 </div>
               </div>
-              <md-fab onclick="startTimer()"; psTimer.style.display='inline-flex'; stTimer.style.display='none'" id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
+              <md-fab onclick="startTimer()"; psTimer.style.display='inline-flex'; stTimer.style.display='none' id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
                 <md-icon slot="icon">play_arrow</md-icon>
               </md-fab>
-              <md-fab onclick="pauseTimer()"; psTimer.style.display='none'; stTimer.style.display='inline-flex'" id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
+              <md-fab onclick="pauseTimer()"; psTimer.style.display='none'; stTimer.style.display='inline-flex' id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
                 <md-icon slot="icon">pause</md-icon>
               </md-fab>
             </div>
@@ -66,7 +67,7 @@
                   <span class="alignCenter">Nom Equip 1</span>
                 </div>
               -->
-              <md-fab onclick=""; id="play" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
+              <md-fab onclick=""; id="editarEquip0" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
                 <md-icon slot="icon">person_add</md-icon>
               </md-fab>
               <md-outlined-select id="equipLocal" label="Equip Local" onchange="seleccioEquips('0')">
@@ -81,7 +82,7 @@
               -->
               <md-outlined-select id="equipVisitant" label="Equip Visitant" onchange="seleccioEquips('1')">
               </md-outlined-select>
-              <md-fab onclick=""; id="play" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
+              <md-fab onclick=""; id="editarEquip1" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
                 <md-icon slot="icon">person_add</md-icon>
               </md-fab>
             </div>
@@ -136,6 +137,7 @@
                 </md-list>
                 <md-filled-button id="buttonAccio0" class="widthMeitat" disabled onclick="
                 document.getElementById('selectAccioEquip0').checked = true; 
+                filtraJugadorsAccio('llistaJugadorsEquip0');
                 dialog.show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
   
               </div>
@@ -189,6 +191,7 @@
                 </md-list>
                 <md-filled-button id="buttonAccio1" class="widthMeitat" disabled onclick="
                 document.getElementById('selectAccioEquip1').checked = true;
+                filtraJugadorsAccio('llistaJugadorsEquip1');
                 document.getElementById('afegirAccio').show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
               </div>
             </div>
@@ -207,7 +210,7 @@
                   <h2>Configuració vMix:</h2>
                   <md-divider></md-divider>
                   <div id="connexioVMIX">
-                      <md-outlined-text-field label="IP vMix" id="inputIpVmix" value="" type="text" minlength="7" size="15" pattern="^(?>(\d|[1-9]\d{2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?1)$">
+                      <md-outlined-text-field label="IP vMix" id="inputIpVmix" value="" type="text" minlength="7" size="15" pattern="^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"                      >
                       </md-outlined-text-field>
                       <md-fab id="acceptConnection" class="alignCenter" size="small" touch-target="none" aria-label="Check" onclick="ipVmix=document.getElementById('inputIpVmix').value;obtenirDadesVmix(ipVmix);">
                           <md-icon slot="icon">check</md-icon>
@@ -319,12 +322,13 @@
           <form slot="content" id="form-jugadors"  class="flex column gap1"> 
             <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
             </md-outlined-text-field>
-            <div class="flex row introJugador" >
-              <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
+            <div class="flex row introJugador" id="llistaJugadors">
+              <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" oninput="validarDorsal(this)">
               </md-outlined-text-field>
-              <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
+              <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1" oninput="validarNomPropi(this)">
               </md-outlined-text-field>
-              <md-checkbox touch-target="wrapper"></md-checkbox>
+              <!--<md-checkbox touch-target="wrapper" class="seleccionat"></md-checkbox>-->
+
             </div>
             <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
               Afegeix
@@ -340,13 +344,22 @@
           let dialogAfegirEquip = document.getElementById("afegirEquip");
         </script> 
 
-
+<!--
+  
+-->
   <md-dialog id="editarEquip">
     <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
     </md-outlined-text-field>
     <form slot="content" id="form-editar" class="flex column gap1"> 
-      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
+      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)">
       </md-outlined-text-field> 
+      <div class="flex row introJugador" id="llistaJugadors">
+        <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" pattern="\\d+" oninput="validarDorsal(this)">
+        </md-outlined-text-field>
+        <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="2" oninput="validarNomPropi(this)">
+        </md-outlined-text-field>
+        <md-checkbox touch-target="wrapper" class="seleccionat" onchange="limitarCheckboxes(this)"></md-checkbox>
+      </div>
       <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-editar')">
         Afegeix
         <md-icon slot="icon">add</md-icon></md-filled-button>
@@ -363,19 +376,19 @@
     
     <md-dialog id="afegirAccio">
       <md-tabs slot="headline">
-        <md-primary-tab onclick="accioGol()">
+        <md-primary-tab onclick="presetGol()">
           <span slot="icon">⚽</span>
           Gol
         </md-primary-tab>
-        <md-primary-tab onclick="accioTargeta()">
+        <md-primary-tab onclick="presetTargeta()">
           <span slot="icon">🟨</span>
           Targeta
         </md-primary-tab>
-        <md-primary-tab onclick="accioCanvi()">
+        <md-primary-tab onclick="presetCanvi()">
           <span slot="icon">🔃</span>
           Canvi
         </md-primary-tab>
-        <md-primary-tab onclick="accioLesio()">
+        <md-primary-tab onclick="presetLesio()">
           <span slot="icon">🚑</span>
           Lesió
         </md-primary-tab>
@@ -391,141 +404,11 @@
                   <label for="selectAccioEquip1">Equip 2</label>        
                 </div>
                 <md-outlined-select label="Sel·lecciona jugador" id="selectJugador1" class="selectJugador">
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
+                  
                 </md-outlined-select>
 
                 <md-outlined-select label="Jugador sortida" id="selectJugador2" class="selectJugador amaga">
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip0" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
-                  <md-select-option class="llistaJugadorsEquip1 amaga" value="">
-                    <div slot="headline"></div>
-                  </md-select-option>
+                  
                 </md-outlined-select>
                 <div>
                   <md-radio id="selectTargetaGroga" class="selectTargeta amaga" name="selectTargeta" value="1" aria-label="Targeta groga" checked onclick=""></md-radio>
@@ -538,7 +421,7 @@
               </div>
             </form>
             <div slot="actions">
-              <md-text-button form="form-id" onclick="desaAccio()">Ok</md-text-button>
+              <md-text-button form="form-id" type="submit" onclick="desaAccio();dialog.close()">Ok</md-text-button>
               <md-text-button form="form-id" onclick="dialog.close()">Cancel</md-text-button>
             </div>
         </md-dialog> 

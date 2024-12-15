@@ -8,7 +8,7 @@ var pageSetup = document.getElementById('pageSetup');
 var pageResum = document.getElementById('pageResum');
 var titolPagina = document.getElementById('titolPagina');
 
-//Timer
+//Variables Crono
 var startTime;
 var updatedTime;
 var difference;
@@ -30,6 +30,52 @@ var llistaGrafismes = []; //llista de grafismes detectats al vMix per a seleccio
 var grafismesSeleccionats = []; //info dels grafismes seleccionats per a vincular amb les dades
 var resumPartit = []; //accions que s'han desat durant el partit
 var accio = "gol";
+
+//Elements html que generem via codi (exclosos els que inserten variables ja que no estan declarades encara):
+var htmlAfegirJugador = `<md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
+</md-outlined-text-field>
+<md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
+</md-outlined-text-field>
+<md-checkbox touch-target="wrapper" class="seleccionat" onchange="limitarCheckboxes(this)"></md-checkbox>`;
+
+var htmlAfegirJugadorNoCheck = `<md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
+</md-outlined-text-field>
+<md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
+</md-outlined-text-field>`;
+
+var htmlDialogCreaEquip = `<md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+</md-outlined-text-field>
+<form slot="content" id="form-jugadors" method="dialog" class="flex column gap1"> 
+  <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
+  </md-outlined-text-field>
+  <div class="flex row introJugador">
+    <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
+    </md-outlined-text-field>
+    <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
+    </md-outlined-text-field>
+  </div>
+  <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
+    Afegeix
+  <md-icon slot="icon">add</md-icon></md-filled-button>
+</form>
+<div slot="actions">
+  <md-text-button form="form-jugadors" onclick="desaEquip()">Ok</md-text-button>
+  <md-text-button onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
+</div>`;
+
+var htmlDialogEditaEquip = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+</md-outlined-text-field>
+<form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
+  <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)">
+  </md-outlined-text-field> 
+  <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-editar')">
+    Afegeix
+  <md-icon slot="icon">add</md-icon></md-filled-button>
+</form>
+<div slot="actions">
+  <md-text-button id="accept" form="form-editar">Ok</md-text-button>
+  <md-text-button onclick="dialogEditarEquip.close()">Cancel</md-text-button>
+</div>`;
 
 
 //Accions a realitzar en carregar la pàgina:
@@ -113,23 +159,21 @@ if(primeraPart & minutes>44){
 
 
 
-// Pagina SETUP
-//Introducció de Jugadors i creacio de la graella de la base de dades d'equips.
+
+// Pagina SETUP ************************************************************************************************************
+//Introducció de Jugadors i creacio de la graella de la base de dades d'equips.*********************************************
 function afegirJugador(desti){
   if (event) event.preventDefault();
   let llistaJugadors = document.getElementById(desti);
   let botoAfegirJugador = llistaJugadors.querySelector('#botoAfegirNouJugador');
   let nouElement = document.createElement('div');
   nouElement.classList.add('flex', 'row', 'introJugador')
-  nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
-  </md-outlined-text-field>
-  <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
-  </md-outlined-text-field>
-  <md-checkbox touch-target="wrapper"></md-checkbox>`;
+  nouElement.innerHTML = desti=='form-editar'?htmlAfegirJugador:htmlAfegirJugadorNoCheck;
   llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
   if (desti == 'form-editar'){
     let botoDesaEquip = document.querySelector('#editarEquip #accept');
     botoDesaEquip.getAttribute('onclick');
+    //mirarem en el l'accio onclick quin es el nombre de equip a l'array
     actualitzaEquip(botoDesaEquip.getAttribute('onclick').substr(16,botoDesaEquip.getAttribute('onclick').length-17));
     generaGraellaEquips();
   }
@@ -143,31 +187,12 @@ function desaEquip(){
   equip['nom'] = document.getElementById('nomEquip').value;
   equip['entrenador'] = document.getElementById('nomEntrenador').value;
   for (jugador of llistaJugadorsForm){
-    llistaJugadors[jugador.querySelector('.dorsal').value] = jugador.querySelector('.jugador').value;
+    llistaJugadors[jugador.querySelector('.dorsal').value] = [jugador.querySelector('.jugador').value, false];
   }
   equip['jugadors'] = llistaJugadors;
   emmagatzematgeEquips.push(equip);
   dialogAfegirEquip.close();
-  dialogAfegirEquip.innerHTML = `<md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
-  </md-outlined-text-field>
-  <form slot="content" id="form-jugadors" method="dialog" class="flex column gap1"> 
-    <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
-    </md-outlined-text-field>
-    <div class="flex row introJugador">
-      <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
-      </md-outlined-text-field>
-      <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1">
-      </md-outlined-text-field>
-      <md-checkbox touch-target="wrapper"></md-checkbox>
-    </div>
-    <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
-      Afegeix
-    <md-icon slot="icon">add</md-icon></md-filled-button>
-  </form>
-  <div slot="actions">
-    <md-text-button form="form-jugadors" onclick="desaEquip()">Ok</md-text-button>
-    <md-text-button onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
-  </div>`;
+  dialogAfegirEquip.innerHTML = htmlDialogCreaEquip;
   localStorage.equips = JSON.stringify(emmagatzematgeEquips);
   document.getElementById('graellaEquips').innerHTML = "";
   generaGraellaEquips(); 
@@ -183,37 +208,24 @@ function generaGraellaEquips(){
     nouElement.id = 'tarjaEquip_'+index;
     nouElement.classList.add('tarjaEquip');
     nouElement.innerHTML = `<img src="" alt="">
-      <div>
-        <h4>`+ equips.nom +`</h4>
-        <p>`+ equips.entrenador +`</p>
-      </div>
-      <md-fab id="editEquip`+index+`" onclick="generaDialogEquip(`+index+`)" class="selfEnd alignCenter" size="small" touch-target="none" aria-label="Edit">
-        <md-icon slot="icon">edit</md-icon>
-      </md-fab>`
-      graellaEquips.appendChild(nouElement);
+    <div>
+      <h4>`+ equips.nom +`</h4>
+      <p>`+ equips.entrenador +`</p>
+    </div>
+    <md-fab id="editEquip`+index+`" onclick="generaDialogEquip(`+index+`)" class="selfEnd alignCenter" size="small" touch-target="none" aria-label="Edit">
+      <md-icon slot="icon">edit</md-icon>
+    </md-fab>`;
+    graellaEquips.appendChild(nouElement);
   }
 }
 
 //Modificació d'equips ja creats:
-
 function generaDialogEquip(num){
   let equipsDesats = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
   let equip = equipsDesats[num];
 
   if ( equip.nom !== document.getElementById('nomEquipEditar').value){
-    dialogEditarEquip.innerHTML = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
-    </md-outlined-text-field>
-    <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
-      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5">
-      </md-outlined-text-field> 
-      <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-editar')">
-        Afegeix
-      <md-icon slot="icon">add</md-icon></md-filled-button>
-    </form>
-    <div slot="actions">
-      <md-text-button id="accept" form="form-editar">Ok</md-text-button>
-      <md-text-button onclick="dialogEditarEquip.close()">Cancel</md-text-button>
-    </div>`;
+    dialogEditarEquip.innerHTML = htmlDialogEditaEquip;
     
     let botoAfegirJugador = document.querySelector('#editarEquip #botoAfegirNouJugador');
     let llistaJugadors = document.querySelector('#editarEquip #form-editar');
@@ -223,29 +235,30 @@ function generaDialogEquip(num){
     dialogEditarEquip.querySelector('#nomEquipEditar').value = equip.nom;
     dialogEditarEquip.querySelector('#nomEntrenadorEditar').value = equip.entrenador;
     for (jugador in equip.jugadors){
+      //console.log (jugador[0] + " - " + jugador + " - " + equip.jugadors[jugador][0] + " - " + equip.jugadors[jugador][1])
       let nouElement = document.createElement('div');
       //nouElement.id = 'introJugador';
       nouElement.classList.add('flex', 'row', 'introJugador');
-      nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="`+jugador[0]+`" placeholder="00" type="text" minlength="1">
+      nouElement.innerHTML = `<md-outlined-text-field class="dorsal" label="Dor." value="`+jugador+`" placeholder="00" type="text" minlength="1" pattern="\\d+" oninput="validarDorsal(this)">
       </md-outlined-text-field>
-      <md-outlined-text-field class="jugador" label="Jugador" value="`+equip.jugadors[jugador]+`" placeholder="Nom Jugador" type="text" minlength="1">
+      <md-outlined-text-field class="jugador" label="Jugador" value="`+equip.jugadors[jugador][0]+`" placeholder="Nom Jugador" type="text" minlength="1" oninput="validarNomPropi(this)">
       </md-outlined-text-field>
-      <md-checkbox touch-target="wrapper"></md-checkbox>`;
+      <md-checkbox touch-target="wrapper" class="seleccionat" onchange="limitarCheckboxes(this)" ${equip.jugadors[jugador][1]?'checked':''}></md-checkbox>`;
       llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
     }
   }
   dialogEditarEquip.show();
 }
 
+//Actualitzar dades que s'han modificat de l'equip
 function actualitzaEquip(num){
-  //emmagatzematgeEquips = localStorage.equips===undefined?[]:JSON.parse(localStorage.equips);
   let llistaJugadorsForm = document.querySelectorAll('#editarEquip .introJugador');
   let llistaJugadors = {};
   let equip = {};
   equip['nom'] = document.getElementById('nomEquipEditar').value;
   equip['entrenador'] = document.getElementById('nomEntrenadorEditar').value;
-  for (jugador of llistaJugadorsForm){
-    llistaJugadors[jugador.querySelector('.dorsal').value] = jugador.querySelector('.jugador').value;
+  for (let [index, jugador] of Object.entries(llistaJugadorsForm)){
+    llistaJugadors[jugador.querySelector('.dorsal').value] = [jugador.querySelector('.jugador').value,jugador.querySelector('.jugador').nextElementSibling.checked];
   }
   equip['jugadors'] = llistaJugadors;
   emmagatzematgeEquips[num] = equip;
@@ -264,13 +277,14 @@ function actualitzaEquip(num){
     <md-text-button form="form-id" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
   </div>`;*/
   document.getElementById('graellaEquips').innerHTML = "";
-  generaGraellaEquips(); 
+  generaGraellaEquips();
 }
 
 
 
-// PAG MAIN
 
+// PAG MAIN
+//LListes d'equips per als desplegables
 function llistaEquips(){
   let llistaEquipLocal = document.getElementById('equipLocal');
   let llistaEquipVisitant = document.getElementById('equipVisitant');
@@ -285,29 +299,47 @@ function llistaEquips(){
   }
 }
 
+//En seleccionar l'equip, generem la llista de seleccionats per mostrar els jugadors sobre el camp
 function seleccioEquips(num){
   let equipTemporal = document.getElementById(num==0?'equipLocal':'equipVisitant').value;
   let counter = 0;
   equipsSeleccionats[num] = emmagatzematgeEquips[equipTemporal];
   for (let [index, jugador] of Object.entries(equipsSeleccionats[num].jugadors)){
-    document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[0].innerHTML = jugador;
-    document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[1].innerHTML = index;
-    counter += 1;
+    if (equipsSeleccionats[num].jugadors[index][1]){
+      document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[0].innerHTML = jugador[0];
+      document.querySelectorAll('#alineacio'+ num+' md-list-item')[counter].children[1].innerHTML = index;
+      counter += 1;
+    }
   }
   document.getElementById('buttonAccio'+num).disabled = false;
   document.getElementById('selectAccioEquip'+num).nextElementSibling.innerHTML = equipsSeleccionats[num].nom;
   document.getElementById('entrenador'+num).innerHTML = equipsSeleccionats[num].entrenador;
   jugadorsAccio(num);
   localStorage[num] = equipTemporal;
-
+  console.log(equipTemporal);
+  document.getElementById(num==0?'equip1':'equip2').children[0].innerHTML = JSON.parse(localStorage.equips)[num].nom;
+  document.getElementById(num==0?'editarEquip0':'editarEquip1').onclick = function() {generaDialogEquip(document.getElementById(num==0?'equipLocal':'equipVisitant').value)};
 }
 
+//Per als Dialogs d'accio llistem els jugadors disponibles sobre el camp i els que no hi son per a possibles canvis
 function jugadorsAccio(num){
   equipsSeleccionats[num];
-  let counter = 0;
-  let llistes = document.getElementsByClassName('selectJugador');
-  for (jugador in equipsSeleccionats[num].jugadors){
-    console.log(jugador+ " - " + equipsSeleccionats[num].jugadors[jugador]);
+  for (let [index, jugador] of Object.entries(equipsSeleccionats[num].jugadors)){
+    console.log(index+ " - " + jugador);
+    let nouElement = document.createElement('md-select-option');
+    nouElement.setAttribute('value', index);
+    nouElement.innerHTML = index + " - " + jugador[0];
+    nouElement.classList.add(`llistaJugadorsEquip${num}`);
+    if(num!==0){
+      nouElement.classList.add('amaga');
+    }
+    
+    if(equipsSeleccionats[num].jugadors[index][1]){
+      document.getElementById('selectJugador1').appendChild(nouElement);
+    } else{
+      document.getElementById('selectJugador2').appendChild(nouElement);
+    }
+    /*
     jugadorsActius[parseInt(num)*11+parseInt(counter)]= jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
     llistes[0].children[parseInt(num)*11+parseInt(counter)].innerHTML = jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
     llistes[0].children[parseInt(num)*11+parseInt(counter)].value = jugador;
@@ -315,9 +347,11 @@ function jugadorsAccio(num){
     llistes[1].children[parseInt(num)*11+parseInt(counter)].innerHTML = jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
     llistes[1].children[parseInt(num)*11+parseInt(counter)].value = jugador;
     counter += 1;
+    */
   }
 }
 
+//les llistes tenen els jugadors dels dos equips, mostrem només els del equip que fa l'acció
 function filtraJugadorsAccio(classe){
   let seleccionats = document.querySelectorAll('.'+classe);
   let deseleccionats = document.querySelectorAll('.'+ (classe=='llistaJugadorsEquip0'?'llistaJugadorsEquip1':'llistaJugadorsEquip0'));
@@ -329,6 +363,7 @@ function filtraJugadorsAccio(classe){
   });
 }
 
+//Obtenir el XML amb les dasdes de vMix
 async function obtenirDadesVmix(ipVmix) {
   //Aquesta funció l'he adaptat d'alguns fils de Stackoverflow. 
   const url = `http://${ipVmix}/api`;
@@ -355,6 +390,7 @@ async function obtenirDadesVmix(ipVmix) {
   afegirOpcionsGrafismes(llistaGrafismes);
 }
 
+//Detectem quins elements del projecte de vMix son grafismes per mostrar al select
 function afegirOpcionsGrafismes(llistaGrafismes) {
   const elementsSelect = document.querySelectorAll("#configuracioEscenes ul li md-outlined-select");
   elementsSelect.forEach(select => {
@@ -380,6 +416,7 @@ function afegirOpcionsGrafismes(llistaGrafismes) {
   });
 }
 
+//Desem els grafismes sel·leccionats
 function desaDadesVmix(){
 let temporalGrafismes = {};
 temporalGrafismes['ip'] = ipVmix;
@@ -397,9 +434,40 @@ grafismesSeleccionats[4] = temp[4].value;
 localStorage.vmix = JSON.stringify(temporalGrafismes);
 }
 
+// ACCIONS DIALOG:
+
+// Validació de noms propis
+function validarNomPropi(input) {
+  const regex = /^[A-ZÀ-Ú][a-zà-ú']+(\s[A-ZÀ-Ú][a-zà-ú']+)*$/;
+  if (!regex.test(input.value)) {
+    input.setCustomValidity('Nom propi no vàlid');
+  } else {
+    input.setCustomValidity('');
+  }
+}
+
+// Validació que "dorsal" sigui un número
+function validarDorsal(input) {
+  if (isNaN(input.value) || input.value <= 0) {
+    input.setCustomValidity('El dorsal ha de ser un nombre positiu.');
+  } else {
+    input.setCustomValidity('');
+  }
+}
+
+// Limitar els md-checkbox a un màxim de 11 seleccionats
+//Funcio copiada d'StackOverflow
+function limitarCheckboxes(checkbox) {
+  const checkboxes = document.querySelectorAll('.seleccionat');
+  const seleccionats = Array.from(checkboxes).filter(cb => cb.checked);
+  if (seleccionats.length > 11) {
+    checkbox.checked = false;
+    alert('Només pots seleccionar un màxim d’11 jugadors.');
+  }
+}
 
 //Accions per modificar el dialog d'afegir acció
-function accioGol(){
+function presetGol(){
   accio='gol';
   document.getElementById('selectJugador2').classList.contains('amaga')?"":document.getElementById('selectJugador2').classList.add('amaga');
   document.querySelectorAll('.selectTargeta').forEach(element => {
@@ -407,15 +475,15 @@ function accioGol(){
   });
 }
 
-function accioTargeta(){
-  accio='targeta;'
+function presetTargeta(){
+  accio='targeta';
   document.getElementById('selectJugador2').classList.contains('amaga')?"":document.getElementById('selectJugador2').classList.add('amaga');
   document.querySelectorAll('.selectTargeta').forEach(element => {
     element.classList.contains('amaga')?element.classList.remove('amaga'):"";
   });
 }
 
-function accioCanvi(){
+function presetCanvi(){
   accio='canvi';
   document.getElementById('selectJugador2').classList.contains('amaga')?document.getElementById('selectJugador2').classList.remove('amaga'):"";
   document.querySelectorAll('.selectTargeta').forEach(element => {
@@ -423,10 +491,11 @@ function accioCanvi(){
   });
 }
 
-function accuiLesio(){
+function presetLesio(){
   accio='lesio';
 }
 
+//Desem les dades de l'accio per al registre, llencem grafisme i actualitzem historic del partit
 function desaAccio(){
   let accioTemp = {};
   accioTemp.timecode = currentTime;
@@ -441,36 +510,19 @@ function desaAccio(){
   generaGraellaResum();
 }
 
-async function obtenirDadesVmix(ipVmix) {
-  //Aquesta funció l'he adaptat d'alguns fils de Stackoverflow. 
-  const url = `http://${ipVmix}/api`;
-  try {
-      const resposta = await fetch(url);       
-      if (!resposta.ok) {
-        throw new Error(`Error en la solicitud: ${resposta.status}`);
-      }
-      const textXML = await resposta.text();
-      const parser = new DOMParser(); 
-      dadesVmix = parser.parseFromString(textXML, "application/xml");
-  } catch (error) {
-      console.error("Error al obtener los datos de vMix:", error);
-      alert("Error al obtener los datos de vMix:\n"+ error);
-      return
-  }
-  const inputs = dadesVmix.querySelectorAll("input");
-  //Creem un array filtrant per l'atribut type
-  const inputsGT = Array.from(inputs).filter(input => input.getAttribute("type") === "GT");
-  llistaGrafismes = inputsGT.map(input => ({
-      key: input.getAttribute("key"),
-      title: input.getAttribute("title")
-  }));
-  afegirOpcionsGrafismes(llistaGrafismes);
+function accioCanvi(){
+  let equip = equipsSeleccionats[document.getElementById('selectAccioEquip0').checked?'0':'1'];
+  let jugadorOut = document.getElementById('selectJugador1').value;
+  let jugadorIn = document.getElementById('selectJugador2').value;
+  equip.jugadors[jugadorOut][1] = false;
+  equip.jugadors[jugadorIn][1] = true;
+  localStorage.equips = JSON.stringify(emmagatzematgeEquips);
 }
 
 async function llencaGrafisme(){
   const url = `http://${ipVmix}/api`;
   let equip = equipsSeleccionats[document.getElementById('selectAccioEquip0').checked?'0':'1'];
-  let jugadorOut = equip.jugadors[document.getElementById('selectJugador1').value];
+  let jugadorOut = equip.jugadors[document.getElementById('selectJugador1').value][0];
   
   switch(accio){
     case 'gol':
@@ -479,15 +531,16 @@ async function llencaGrafisme(){
 
       break;
     case 'canvi':     
-      let jugadorIn = equip.jugadors[document.getElementById('selectJugador2').value];
+      let jugadorIn = equip.jugadors[document.getElementById('selectJugador2').value][0];
       let url1 = ''+url+'/?Function=SetText&Input='+grafismesSeleccionats[3].replace(/ /g, '%20')+'&Value='+jugadorIn.replace(/ /g, '%20')+'&SelectedName=On%20Name.Text';
       let url2 = ''+url+'/?Function=SetText&Input='+grafismesSeleccionats[3].replace(/ /g, '%20')+'&Value='+jugadorOut.replace(/ /g, '%20')+'&SelectedName=Off%20Name.Text';
       let url3 = ''+url+'/?Function=OverlayInput2&Input='+grafismesSeleccionats[3].replace(/ /g, '%20');
+      accioCanvi();
+      window.location.reload();
       try {
         console.log(url1)       
         const resposta = await fetch(url1);
         if (!resposta.ok) {
-          alert('Grafisme Targeta actualitzat!');
           throw new Error(`Error en la solicitud: ${resposta.status}`);
         }
       } catch (error) {
@@ -504,7 +557,6 @@ async function llencaGrafisme(){
         alert("Error al obtener los datos de vMix:\n"+ error);
         return
       }
-      alert('Grafisme Targeta actualitzat!');
       try {
         console.log(url3); 
         const resposta3 = await fetch(url3);      
@@ -535,26 +587,56 @@ function generaIcones(accio){
   }
 }
 
+//Actualització graella de resum d'accions
 function generaGraellaResum(){
   let accionsDesades = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
   let graellaResum = document.getElementById('graellaResum');
   graellaResum.innerHTML = "";
   let golsLocal = 0;
   let golsVisitant = 0;
-  for (let[index, accions] of accionsDesades.entries()){
+  for (let[index, accions] of Object.entries(accionsDesades)){
     accions.tipus=='gol'?accions.equipAccio==0?golsLocal +=1:golsVisitant +=1:"";
     let nouElement = document.createElement('li');
     nouElement.id = 'accio_'+index;
     nouElement.innerHTML = `
-    <span class="timecode">${accions.timecode}</span>
+    <span class="timecode">${accions.timecode}'</span>
     <span class="icona">${accions.equipAccio==0?generaIcones(accions.tipus):""}</span>
-    <span class="jugador">${accions.equipAccio==0?accions.tipus=='canvi'?equipsSeleccionats[0].jugadors[accions.jugador0] + " > "+equipsSeleccionats[0].jugadors[accions.jugador1]:equipsSeleccionats[0].jugadors[accions.jugador0]:""}</span>
+    <span class="jugador">${accions.equipAccio==0?accions.tipus=='canvi'?equipsSeleccionats[0].jugadors[accions.jugador0][0] + " > "+equipsSeleccionats[0].jugadors[accions.jugador1][0]:equipsSeleccionats[0].jugadors[accions.jugador0][0]:""}</span>
     <span class="resultat">${golsLocal}-${golsVisitant}</span>
     <span class="icona">${accions.equipAccio==1?generaIcones(accions.tipus):""}</span>
-    <span class="jugador">${accions.equipAccio==1?accions.tipus=='canvi'?equipsSeleccionats[1].jugadors[accions.jugador0] + " > "+equipsSeleccionats[1].jugadors[accions.jugador1]:equipsSeleccionats[1].jugadors[accions.jugador0]:""}</span>
-    <md-icon slot="icon" onclick="editaAccio('${index}')">Cancel</md-icon>`
+    <span class="jugador">${accions.equipAccio==1?accions.tipus=='canvi'?equipsSeleccionats[1].jugadors[accions.jugador0][0] + " > "+equipsSeleccionats[1].jugadors[accions.jugador1][0]:equipsSeleccionats[1].jugadors[accions.jugador0][0]:""}</span>
+    <md-icon slot="icon" onclick="editaAccio('${index}')">Cancel</md-icon>`;
     graellaResum.appendChild(nouElement);
+    //Si un jugador es lesiona o és expulsat el deshabilitem dels seleccionables
+    accions.tipus=='lesio'?document.querySelector('#selectJugador1 [value="'+accions.jugador0+'"]').disabled = true:"";
   }
+  let resultat = document.querySelectorAll('#resultat');
+  resultat.forEach( element => {
+    element.innerHTML = golsLocal +" - "+golsVisitant;
+  });
+  
 }
+
+function exportVmix(fileName){
+  let sortida = {};
+  sortida = localStorage.vmix;
+  var textToSaveAsBlob = new Blob([sortida], {
+    type: "text/plain"
+  });
+  var textToSaveAsURL=window.URL.createObjectURL(textToSaveAsBlob);
+  var downloadLink = document.createElement("a");
+  downloadLink.download = fileName;
+  downloadLink.innerHTML = "Download File";
+  downloadLink.href = textToSaveAsURL;
+  downloadLink.onclick = function () {
+    document.body.removeChild(event.target);
+  };
+  downloadLink.style.display = "none";
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+}
+
+const JSONToFile = (obj, filename) =>
+  writeFileSync(`${filename}.json`, JSON.stringify(obj, null, 2));
 
 
