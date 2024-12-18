@@ -203,6 +203,10 @@ main div {
   align-content: flex-start;
 }
 
+.abreviatura {
+  padding-top: 0px;
+}
+
 md-list-item{
   height: 50px;
 }
@@ -228,7 +232,7 @@ md-radio:checked+label{ background-color: #FFFF00; } ​
 }
 
 .resum li{
-  padding: 0 2vh;
+  padding: 0 0 0 2vh;
   margin-bottom: 2px;
   height: 2.5em;
   display: flex;

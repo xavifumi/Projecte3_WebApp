@@ -137,7 +137,7 @@
                 </md-list>
                 <md-filled-button id="buttonAccio0" class="widthMeitat" disabled onclick="
                 document.getElementById('selectAccioEquip0').checked = true; 
-                filtraJugadorsAccio('llistaJugadorsEquip0');
+                filtraJugadorsAccio('llistaJugadorsEquip0');dialog.querySelector('[type=submit]').onclick=function(){desaAccio()};
                 dialog.show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
   
               </div>
@@ -190,7 +190,7 @@
                   </md-list-item>
                 </md-list>
                 <md-filled-button id="buttonAccio1" class="widthMeitat" disabled onclick="
-                document.getElementById('selectAccioEquip1').checked = true;
+                document.getElementById('selectAccioEquip1').checked = true;dialog.querySelector('[type=submit]').onclick=function(){desaAccio()};
                 filtraJugadorsAccio('llistaJugadorsEquip1');
                 document.getElementById('afegirAccio').show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
               </div>
@@ -317,18 +317,18 @@
         -->
 
         <md-dialog id="afegirEquip">
-          <md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+          <md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip"  type="text" minlength="5" required>
           </md-outlined-text-field>
-          <form slot="content" id="form-jugadors"  class="flex column gap1"> 
-            <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
+          <md-outlined-text-field id="abreviEquip" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase" required>
+          </md-outlined-text-field>
+          <form slot="content" id="form-equip"  class="flex column gap1"> 
+            <md-outlined-text-field id="nomEntrenador" label="Entrenador"  type="text" minlength="5" required>
             </md-outlined-text-field>
             <div class="flex row introJugador" id="llistaJugadors">
               <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" oninput="validarDorsal(this)">
               </md-outlined-text-field>
               <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1" oninput="validarNomPropi(this)">
               </md-outlined-text-field>
-              <!--<md-checkbox touch-target="wrapper" class="seleccionat"></md-checkbox>-->
-
             </div>
             <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
               Afegeix
@@ -336,22 +336,21 @@
             </md-filled-button>
           </form>
           <div slot="actions">
-            <md-text-button type= "submit" id="accept" form="form-jugadors" onclick="desaEquip()">Ok</md-text-button>
-            <md-text-button onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
+            <md-text-button type= "submit" id="accept" form="form-equip" >Ok</md-text-button>
+            <md-text-button form="form-equip" onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
           </div>
         </md-dialog>
         <script> 
           let dialogAfegirEquip = document.getElementById("afegirEquip");
         </script> 
 
-<!--
-  
--->
   <md-dialog id="editarEquip">
-    <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+    <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5"required>
+    </md-outlined-text-field>
+    <md-outlined-text-field id="abreviEquipEditar" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase"required >
     </md-outlined-text-field>
     <form slot="content" id="form-editar" class="flex column gap1"> 
-      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)">
+      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)" required>
       </md-outlined-text-field> 
       <div class="flex row introJugador" id="llistaJugadors">
         <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" pattern="\\d+" oninput="validarDorsal(this)">
@@ -366,7 +365,7 @@
       </form>
       <div slot="actions">
         <md-text-button type= "submit" id="accept" form="form-editar" onclick="actualitzaEquip()">Ok</md-text-button>
-        <md-text-button onclick="dialogEditarEquip.close()">Cancel</md-text-button>
+        <md-text-button form="form-editar" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
       </div>
     </md-dialog>
     <script> 
@@ -375,7 +374,7 @@
     
     
     <md-dialog id="afegirAccio">
-      <md-tabs slot="headline">
+      <md-tabs slot="headline" id="tabsAccio">
         <md-primary-tab onclick="presetGol()">
           <span slot="icon">⚽</span>
           Gol
@@ -411,7 +410,7 @@
                   
                 </md-outlined-select>
                 <div>
-                  <md-radio id="selectTargetaGroga" class="selectTargeta amaga" name="selectTargeta" value="1" aria-label="Targeta groga" checked onclick=""></md-radio>
+                  <md-radio id="selectTargetaGroga" class="selectTargeta amaga" name="selectTargeta" value="1" aria-label="Targeta groga" onclick=""></md-radio>
                     <label for="selectTargetaGroga" class="selectTargeta amaga">Tarja Groga</label>
                 </div>
                 <div>
@@ -421,8 +420,8 @@
               </div>
             </form>
             <div slot="actions">
-              <md-text-button form="form-id" type="submit" onclick="desaAccio();dialog.close()">Ok</md-text-button>
-              <md-text-button form="form-id" onclick="dialog.close()">Cancel</md-text-button>
+              <md-text-button form="form-accio" type="submit" onclick="desaAccio()">Ok</md-text-button>
+              <md-text-button form="form-accio" onclick="dialog.close()">Cancel</md-text-button>
             </div>
         </md-dialog> 
         <script> let dialog = document.getElementById("afegirAccio")</script>

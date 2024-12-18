@@ -29,6 +29,9 @@ var dadesVmix; //Info rebuda de l'API en XML
 var llistaGrafismes = []; //llista de grafismes detectats al vMix per a seleccionar
 var grafismesSeleccionats = []; //info dels grafismes seleccionats per a vincular amb les dades
 var resumPartit = []; //accions que s'han desat durant el partit
+var targetes = [];
+targetes[0] = {};
+targetes[1] = {};
 var accio = "gol";
 
 //Elements html que generem via codi (exclosos els que inserten variables ja que no estan declarades encara):
@@ -44,6 +47,8 @@ var htmlAfegirJugadorNoCheck = `<md-outlined-text-field class="dorsal" label="Do
 </md-outlined-text-field>`;
 
 var htmlDialogCreaEquip = `<md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+</md-outlined-text-field>
+<md-outlined-text-field id="abreviEquip" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
 </md-outlined-text-field>
 <form slot="content" id="form-jugadors" method="dialog" class="flex column gap1"> 
   <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
@@ -64,6 +69,8 @@ var htmlDialogCreaEquip = `<md-outlined-text-field id="nomEquip" slot="headline"
 </div>`;
 
 var htmlDialogEditaEquip = `<md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
+</md-outlined-text-field>
+<md-outlined-text-field id="abreviEquipEditar" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
 </md-outlined-text-field>
 <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
   <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)">
@@ -100,6 +107,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
   generaGraellaResum();
 
 });
+
+dialogAfegirEquip.addEventListener('cancel', (e) => e.preventDefault());
+dialogEditarEquip.addEventListener('cancel', (e) => e.preventDefault());
+dialog.addEventListener('cancel', (e) => e.preventDefault());
+
+// Opcional: també podem interceptar el "close"
+//dialogAfegirEquip.addEventListener('close', (e) => e.preventDefault());
+//dialogEditarEquip.addEventListener('close', (e) => e.preventDefault());
+//dialog.addEventListener('close', (e) => e.preventDefault());
 
 function startTimer(){
     if(!running){
@@ -163,20 +179,22 @@ if(primeraPart & minutes>44){
 // Pagina SETUP ************************************************************************************************************
 //Introducció de Jugadors i creacio de la graella de la base de dades d'equips.*********************************************
 function afegirJugador(desti){
-  if (event) event.preventDefault();
   let llistaJugadors = document.getElementById(desti);
   let botoAfegirJugador = llistaJugadors.querySelector('#botoAfegirNouJugador');
   let nouElement = document.createElement('div');
   nouElement.classList.add('flex', 'row', 'introJugador')
   nouElement.innerHTML = desti=='form-editar'?htmlAfegirJugador:htmlAfegirJugadorNoCheck;
   llistaJugadors.insertBefore(nouElement, botoAfegirJugador);
+  /** 
+   * 
   if (desti == 'form-editar'){
     let botoDesaEquip = document.querySelector('#editarEquip #accept');
-    botoDesaEquip.getAttribute('onclick');
+    //botoDesaEquip.getAttribute('onclick');
     //mirarem en el l'accio onclick quin es el nombre de equip a l'array
     actualitzaEquip(botoDesaEquip.getAttribute('onclick').substr(16,botoDesaEquip.getAttribute('onclick').length-17));
     generaGraellaEquips();
   }
+  */
 }
 
 function desaEquip(){
@@ -186,6 +204,7 @@ function desaEquip(){
   let equip = {};
   equip['nom'] = document.getElementById('nomEquip').value;
   equip['entrenador'] = document.getElementById('nomEntrenador').value;
+  equip['abrevi'] = document.getElementById('abreviEquip').value; 
   for (jugador of llistaJugadorsForm){
     llistaJugadors[jugador.querySelector('.dorsal').value] = [jugador.querySelector('.jugador').value, false];
   }
@@ -233,6 +252,7 @@ function generaDialogEquip(num){
     
     botoDesaEquip.setAttribute("onclick", "actualitzaEquip("+num+")");
     dialogEditarEquip.querySelector('#nomEquipEditar').value = equip.nom;
+    dialogEditarEquip.querySelector('#abreviEquipEditar').value = equip.abrevi;
     dialogEditarEquip.querySelector('#nomEntrenadorEditar').value = equip.entrenador;
     for (jugador in equip.jugadors){
       //console.log (jugador[0] + " - " + jugador + " - " + equip.jugadors[jugador][0] + " - " + equip.jugadors[jugador][1])
@@ -257,6 +277,7 @@ function actualitzaEquip(num){
   let equip = {};
   equip['nom'] = document.getElementById('nomEquipEditar').value;
   equip['entrenador'] = document.getElementById('nomEntrenadorEditar').value;
+  equip['abrevi'] = document.getElementById('abreviEquipEditar').value;
   for (let [index, jugador] of Object.entries(llistaJugadorsForm)){
     llistaJugadors[jugador.querySelector('.dorsal').value] = [jugador.querySelector('.jugador').value,jugador.querySelector('.jugador').nextElementSibling.checked];
   }
@@ -311,6 +332,11 @@ function seleccioEquips(num){
       counter += 1;
     }
   }
+  console.log('COUNTER: '+ counter);
+  if (counter<11){
+    generaDialogEquip(equipTemporal);
+    alert('Recorda a afegir el 11 inicial!');
+  }
   document.getElementById('buttonAccio'+num).disabled = false;
   document.getElementById('selectAccioEquip'+num).nextElementSibling.innerHTML = equipsSeleccionats[num].nom;
   document.getElementById('entrenador'+num).innerHTML = equipsSeleccionats[num].entrenador;
@@ -319,6 +345,7 @@ function seleccioEquips(num){
   console.log(equipTemporal);
   document.getElementById(num==0?'equip1':'equip2').children[0].innerHTML = JSON.parse(localStorage.equips)[num].nom;
   document.getElementById(num==0?'editarEquip0':'editarEquip1').onclick = function() {generaDialogEquip(document.getElementById(num==0?'equipLocal':'equipVisitant').value)};
+
 }
 
 //Per als Dialogs d'accio llistem els jugadors disponibles sobre el camp i els que no hi son per a possibles canvis
@@ -339,15 +366,6 @@ function jugadorsAccio(num){
     } else{
       document.getElementById('selectJugador2').appendChild(nouElement);
     }
-    /*
-    jugadorsActius[parseInt(num)*11+parseInt(counter)]= jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
-    llistes[0].children[parseInt(num)*11+parseInt(counter)].innerHTML = jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
-    llistes[0].children[parseInt(num)*11+parseInt(counter)].value = jugador;
-    //La segona llista ha de ser dels no sel·leccionats
-    llistes[1].children[parseInt(num)*11+parseInt(counter)].innerHTML = jugador + " - " + equipsSeleccionats[num].jugadors[jugador];
-    llistes[1].children[parseInt(num)*11+parseInt(counter)].value = jugador;
-    counter += 1;
-    */
   }
 }
 
@@ -498,16 +516,25 @@ function presetLesio(){
 //Desem les dades de l'accio per al registre, llencem grafisme i actualitzem historic del partit
 function desaAccio(){
   let accioTemp = {};
+  let accionsDesades = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
+  let dobleTargeta = false;
   accioTemp.timecode = currentTime;
   accioTemp.equipAccio = document.getElementById('selectAccioEquip0').checked?'0':'1';
-  accioTemp.tipus = accio;
   accioTemp.jugador0 = document.getElementById('selectJugador1').value;
+  accionsDesades.forEach(element => {
+    accio == 'targeta' && element.equipAccio == accioTemp.equipAccio && element.jugador0 == accioTemp.jugador0?dobleTargeta=true:"";
+    //console.log(dobleTargeta);
+  });
+  accio=accio=='targeta'?dobleTargeta?'vermella':document.getElementById('selectTargetaGroga').checked?'groga':'vermella':accio;
+  accioTemp.tipus = accio;
   accioTemp.jugador1 = document.getElementById('selectJugador2').value;
-  resumPartit.push(accioTemp);
-  localStorage.accions = JSON.stringify(resumPartit);
+  accionsDesades.push(accioTemp);
+  localStorage.accions = JSON.stringify(accionsDesades);
 
   llencaGrafisme();
   generaGraellaResum();
+  presetGol();
+  window.location.reload();
 }
 
 function accioCanvi(){
@@ -517,6 +544,10 @@ function accioCanvi(){
   equip.jugadors[jugadorOut][1] = false;
   equip.jugadors[jugadorIn][1] = true;
   localStorage.equips = JSON.stringify(emmagatzematgeEquips);
+}
+
+function accioTargeta(){
+  targetes[document.getElementById('selectAccioEquip0').checked?'0':'1'][document.getElementById('selectJugador1').value] +=1
 }
 
 async function llencaGrafisme(){
@@ -578,8 +609,10 @@ function generaIcones(accio){
   switch(accio){
     case 'gol':
       return '⚽'
-    case 'targeta':
+    case 'groga':
       return '🟨'
+    case 'vermella':
+      return '🟥'
     case 'canvi':
       return '🔃'
     case 'lesio':
@@ -592,6 +625,7 @@ function generaGraellaResum(){
   let accionsDesades = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
   let graellaResum = document.getElementById('graellaResum');
   graellaResum.innerHTML = "";
+  //aprofitem aquesta funcio per recomptar gols i actualitzar el HTML
   let golsLocal = 0;
   let golsVisitant = 0;
   for (let[index, accions] of Object.entries(accionsDesades)){
@@ -605,16 +639,63 @@ function generaGraellaResum(){
     <span class="resultat">${golsLocal}-${golsVisitant}</span>
     <span class="icona">${accions.equipAccio==1?generaIcones(accions.tipus):""}</span>
     <span class="jugador">${accions.equipAccio==1?accions.tipus=='canvi'?equipsSeleccionats[1].jugadors[accions.jugador0][0] + " > "+equipsSeleccionats[1].jugadors[accions.jugador1][0]:equipsSeleccionats[1].jugadors[accions.jugador0][0]:""}</span>
-    <md-icon slot="icon" onclick="editaAccio('${index}')">Cancel</md-icon>`;
+    <md-filled-button onclick="editaAccio('${index}')"><md-icon slot="icon" >Edit</md-icon>edita</md-filled-button>`;
     graellaResum.appendChild(nouElement);
     //Si un jugador es lesiona o és expulsat el deshabilitem dels seleccionables
-    accions.tipus=='lesio'?document.querySelector('#selectJugador1 [value="'+accions.jugador0+'"]').disabled = true:"";
+    accions.tipus=='vermella'?document.querySelector('#selectJugador1 [value="'+accions.jugador0+'"]').disabled = true:"";
   }
   let resultat = document.querySelectorAll('#resultat');
   resultat.forEach( element => {
     element.innerHTML = golsLocal +" - "+golsVisitant;
   });
-  
+}
+
+function editaAccio(num){
+  let accionsDesades = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
+  let accioTemp = accionsDesades[num];
+  let pestanya = document.getElementById('tabsAccio');
+  switch(accioTemp.tipus){
+    case 'gol':
+      pestanya.children[0].click();
+    break
+    case 'groga':
+    case 'vermella':
+      pestanya.children[1].click();
+    break
+    case 'canvi':
+      pestanya.children[2].click();
+    break
+    case 'lesio':
+      pestanya.children[3].click();
+    break
+  }
+  document.getElementById(accioTemp.equipAccio==0?'selectAccioEquip0':'selectAccioEquip1').checked = true;
+  document.getElementById('selectJugador1').value = accioTemp.jugador0;
+  accioTemp.tipus=='groga'?(document.getElementById('selectJugador2').value = accioTemp.jugador1,document.getElementById('selectTargetaGroga').checked=true):'';
+  accioTemp.tipus=='vermella'?(document.getElementById('selectJugador2').value = accioTemp.jugador1,document.getElementById('selectTargetaVermella').checked=true):'';
+  dialog.querySelector('[type=submit]').onclick=function(){corregeixAccio(num)};
+  dialog.show();
+}
+
+function corregeixAccio(num){
+  let accionsDesades = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
+  let accioTemp = accionsDesades[num];
+  let accionsAnteriors = accionsDesades.splice(0,num);
+  console.log(accioTemp);
+  let dobleTargeta = false;
+  accioTemp.equipAccio = document.getElementById('selectAccioEquip0').checked?'0':'1';
+  accioTemp.jugador0 = document.getElementById('selectJugador1').value;
+  accionsAnteriors.forEach(element => {
+    accio == 'targeta' && element.equipAccio == accioTemp.equipAccio && element.jugador0 == accioTemp.jugador0?dobleTargeta=true:"";
+    //console.log(dobleTargeta);
+  });
+  accio=accio=='targeta'?dobleTargeta?'vermella':document.getElementById('selectTargetaGroga').checked?'groga':'vermella':accio;
+  accioTemp.tipus = accio;
+  accioTemp.jugador1 = document.getElementById('selectJugador2').value;
+  accionsDesades = accionsAnteriors.concat(accionsDesades);
+  accionsDesades[num]=accioTemp;
+  localStorage.accions = JSON.stringify(accionsDesades);
+  generaGraellaResum();
 }
 
 function exportVmix(fileName){
