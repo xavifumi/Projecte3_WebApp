@@ -92,11 +92,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
   ipVmix = localStorage.vmix===undefined?"":JSON.parse(localStorage.vmix).ip;
   document.getElementById('inputIpVmix').value = ipVmix;
   //  let selectorsDeGrafisme = document.querySelectorAll()
-  grafismesSeleccionats[0] = JSON.parse(localStorage.vmix).grafismeAlineacio;
-  grafismesSeleccionats[1] = JSON.parse(localStorage.vmix).grafismeGol;
-  grafismesSeleccionats[2] = JSON.parse(localStorage.vmix).grafismeTargeta;
-  grafismesSeleccionats[3] = JSON.parse(localStorage.vmix).grafismeCanvi;   
-  grafismesSeleccionats[4] = JSON.parse(localStorage.vmix).grafismeFinal;
+  localStorage.vMix===undefined?"":(
+    grafismesSeleccionats[0] = JSON.parse(localStorage.vmix).grafismeAlineacio,
+    grafismesSeleccionats[1] = JSON.parse(localStorage.vmix).grafismeGol,
+    grafismesSeleccionats[2] = JSON.parse(localStorage.vmix).grafismeTargeta,
+    grafismesSeleccionats[3] = JSON.parse(localStorage.vmix).grafismeCanvi,   
+    grafismesSeleccionats[4] = JSON.parse(localStorage.vmix).grafismeFinal
+  );
   resumPartit = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
   //'equipLocal':'equipVisitant'
   llistaEquips();
@@ -452,6 +454,19 @@ grafismesSeleccionats[4] = temp[4].value;
 localStorage.vmix = JSON.stringify(temporalGrafismes);
 }
 
+function actualitzaMarcadors(gols0, gols1){
+  const inputs = dadesVmix.querySelectorAll("input");
+  //filtrem els grafismes que contenen marcador
+  const inputsGT = Array.from(inputs).filter(input => input.querySelector('text[name="Score2.Text"]'));
+  const url = `http://${ipVmix}/api`;
+  for(marcador in inputsGT){
+    let url1 = ''+url+'/?Function=SetText&Input='+inputsGT[marcador].getAttribute('key').replace(/ /g, '%20')+'&Value='+gols0+'&SelectedName=Score1.Text';
+    let url2 = ''+url+'/?Function=SetText&Input='+inputsGT[marcador].getAttribute('key').replace(/ /g, '%20')+'&Value='+gols1+'&SelectedName=Score2.Text'; 
+    fetch(url1);
+    fetch(url2);
+  }
+}
+
 // ACCIONS DIALOG:
 
 // Validació de noms propis
@@ -648,6 +663,7 @@ function generaGraellaResum(){
   resultat.forEach( element => {
     element.innerHTML = golsLocal +" - "+golsVisitant;
   });
+  dadesVmix==undefined?"":actualitzaMarcadors(golsLocal, golsVisitant);
 }
 
 function editaAccio(num){
