@@ -92,15 +92,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
   ipVmix = localStorage.vmix===undefined?"":JSON.parse(localStorage.vmix).ip;
   document.getElementById('inputIpVmix').value = ipVmix;
   //  let selectorsDeGrafisme = document.querySelectorAll()
-  localStorage.vMix===undefined?"":(
-    grafismesSeleccionats[0] = JSON.parse(localStorage.vmix).grafismeAlineacio,
-    grafismesSeleccionats[1] = JSON.parse(localStorage.vmix).grafismeGol,
-    grafismesSeleccionats[2] = JSON.parse(localStorage.vmix).grafismeTargeta,
-    grafismesSeleccionats[3] = JSON.parse(localStorage.vmix).grafismeCanvi,   
-    grafismesSeleccionats[4] = JSON.parse(localStorage.vmix).grafismeFinal
-  );
+  if(localStorage.vmix!==undefined){
+    grafismesSeleccionats[0] = JSON.parse(localStorage.vmix).grafismeAlineacio;
+    grafismesSeleccionats[1] = JSON.parse(localStorage.vmix).grafismeGol;
+    grafismesSeleccionats[2] = JSON.parse(localStorage.vmix).grafismeTargeta;
+    grafismesSeleccionats[3] = JSON.parse(localStorage.vmix).grafismeCanvi;
+    grafismesSeleccionats[4] = JSON.parse(localStorage.vmix).grafismeFinal;
+  };
   resumPartit = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
   //'equipLocal':'equipVisitant'
+  obtenirDadesVmix(ipVmix);
   llistaEquips();
   document.getElementById('equipLocal').value = localStorage[0];
   seleccioEquips(0);
@@ -126,6 +127,8 @@ function startTimer(){
       paused = 0;
       running = 1;
       stTimer.style.display;
+      fetch(`http://${ipVmix}/api/?Function=StartCountdown&Input=${grafismesSeleccionats[5]}&SelectedName=Time.Text`);
+      fetch(`http://${ipVmix}/api/?Function=OverlayInput1In&Input=${grafismesSeleccionats[5]}`)
     }
   }
 
@@ -172,6 +175,7 @@ for (let timer of timerDisplay) {
 if(primeraPart & minutes>44){
   pauseTimer();
   primeraPart=false;
+  fetch('http://172.30.208.1:8088/api/?Function=OverlayInput1Out')
   }
 }
 
@@ -305,7 +309,6 @@ function actualitzaEquip(num){
 
 
 
-
 // PAG MAIN
 //LListes d'equips per als desplegables
 function llistaEquips(){
@@ -319,7 +322,8 @@ function llistaEquips(){
     let nouElement2 = nouElement.cloneNode(true);
     llistaEquipVisitant.appendChild(nouElement);
     llistaEquipLocal.appendChild(nouElement2);
-  }
+  };
+  //actualitzaNomEquips()
 }
 
 //En seleccionar l'equip, generem la llista de seleccionats per mostrar els jugadors sobre el camp
@@ -451,7 +455,30 @@ temporalGrafismes['grafismeCanvi'] = temp[3].value;
 grafismesSeleccionats[3] = temp[3].value;
 temporalGrafismes['grafismeFinal'] = temp[4].value;   
 grafismesSeleccionats[4] = temp[4].value;
+temporalGrafismes['moscaPartit'] = temp[5].value;   
+grafismesSeleccionats[5] = temp[5].value;
 localStorage.vmix = JSON.stringify(temporalGrafismes);
+}
+
+function actualitzaNomEquips(){
+  const inputs = dadesVmix.querySelectorAll("input");
+  //filtrem els grafismes que contenen marcador
+  var inputsGT = Array.from(inputs).filter(input => input.querySelector('text[name="Team1.Text"]'));
+  const url = `http://${ipVmix}/api`;
+  for(marcador in inputsGT){
+    let url1 = ''+url+'/?Function=SetText&Input='+inputsGT[marcador].getAttribute('key').replace(/ /g, '%20')+'&Value='+equipsSeleccionats[0].abrevi+'&SelectedName=Team1.Text';
+    let url2 = ''+url+'/?Function=SetText&Input='+inputsGT[marcador].getAttribute('key').replace(/ /g, '%20')+'&Value='+equipsSeleccionats[1].abrevi+'&SelectedName=Team2.Text'; 
+    fetch(url1);
+    fetch(url2);
+  }
+  var inputsGT2 = Array.from(inputs).filter(input => input.querySelector('text[name="TeamName1.Text"]'));
+  for(marcador in inputsGT2){
+    console.log(inputsGT2[marcador]);
+    let url1 = ''+url+'/?Function=SetText&Input='+inputsGT2[marcador].getAttribute('key').replace(/ /g, '%20')+'&Value='+equipsSeleccionats[0].nom+'&SelectedName=TeamName1.Text';
+    let url2 = ''+url+'/?Function=SetText&Input='+inputsGT2[marcador].getAttribute('key').replace(/ /g, '%20')+'&Value='+equipsSeleccionats[1].nom+'&SelectedName=TeamName2.Text'; 
+    fetch(url1);
+    fetch(url2);
+  }
 }
 
 function actualitzaMarcadors(gols0, gols1){
@@ -548,7 +575,6 @@ function desaAccio(){
 
   llencaGrafisme();
   generaGraellaResum();
-  presetGol();
   window.location.reload();
 }
 
@@ -567,22 +593,59 @@ function accioTargeta(){
 
 async function llencaGrafisme(){
   const url = `http://${ipVmix}/api`;
+  let inputGrafisme;
   let equip = equipsSeleccionats[document.getElementById('selectAccioEquip0').checked?'0':'1'];
+  let abrevi = equip.abrevi;
+  let equipNom = equip.nom;
   let jugadorOut = equip.jugadors[document.getElementById('selectJugador1').value][0];
-  
+  let url1, url2, url3, url4, url5;
   switch(accio){
     case 'gol':
       break;
-    case 'targeta':
-
+      case 'groga':
+        inputGrafisme = grafismesSeleccionats[2];
+        url1 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+jugadorOut.replace(/ /g, '%20')+'&SelectedName=Player.Text';
+        url2 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+equipNom.replace(/ /g, '%20')+'&SelectedName=TeamName.Text';
+        url3 = ''+url+'/?Function=SetImageVisibleOn&Input='+inputGrafisme.replace(/ /g, '%20')+'&SelectedName=Yellow.Source';
+        url4 = ''+url+'/?Function=SetImageVisibleOff&Input='+inputGrafisme.replace(/ /g, '%20')+'&SelectedName=Red.Source';
+        url5 = ''+url+'/?Function=OverlayInput2&Input='+inputGrafisme.replace(/ /g, '%20');
+        fetch(url3);
+        fetch(url4);
+        fetch(url1);
+        fetch(url2);
+        setTimeout(fetch(url5), 5000);
+        presetGol();
       break;
-    case 'canvi':     
-      let jugadorIn = equip.jugadors[document.getElementById('selectJugador2').value][0];
-      let url1 = ''+url+'/?Function=SetText&Input='+grafismesSeleccionats[3].replace(/ /g, '%20')+'&Value='+jugadorIn.replace(/ /g, '%20')+'&SelectedName=On%20Name.Text';
-      let url2 = ''+url+'/?Function=SetText&Input='+grafismesSeleccionats[3].replace(/ /g, '%20')+'&Value='+jugadorOut.replace(/ /g, '%20')+'&SelectedName=Off%20Name.Text';
-      let url3 = ''+url+'/?Function=OverlayInput2&Input='+grafismesSeleccionats[3].replace(/ /g, '%20');
+      case 'vermella':
+        inputGrafisme = grafismesSeleccionats[2];
+        url1 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+jugadorOut.replace(/ /g, '%20')+'&SelectedName=Player.Text';
+        url2 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+equipNom.replace(/ /g, '%20')+'&SelectedName=TeamName.Text';
+        url3 = ''+url+'/?Function=SetImageVisibleOff&Input='+inputGrafisme.replace(/ /g, '%20')+'&SelectedName=Yellow.Source';
+        url4 = ''+url+'/?Function=SetImageVisibleOn&Input='+inputGrafisme.replace(/ /g, '%20')+'&SelectedName=Red.Source';
+        url5 = ''+url+'/?Function=OverlayInput2&Input='+inputGrafisme.replace(/ /g, '%20');
+        fetch(url3);
+        fetch(url4);
+        fetch(url1);
+        fetch(url2);
+        setTimeout(fetch(url5), 5000);
+        presetGol();
+        break
+        case 'canvi':    
+        let jugadorIn = equip.jugadors[document.getElementById('selectJugador2').value][0];
+        inputGrafisme = grafismesSeleccionats[3]; 
+      url1 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+jugadorIn.replace(/ /g, '%20')+'&SelectedName=On%20Name.Text';
+      url2 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+jugadorOut.replace(/ /g, '%20')+'&SelectedName=Off%20Name.Text';
+      url3 = ''+url+'/?Function=SetText&Input='+inputGrafisme.replace(/ /g, '%20')+'&Value='+abrevi.replace(/ /g, '%20')+'&SelectedName=Team.Text';
+      url4 = ''+url+'/?Function=OverlayInput2&Input='+inputGrafisme.replace(/ /g, '%20');
+      fetch(url1);
+      fetch(url2);
+      fetch(url3);
+      fetch(url4);
       accioCanvi();
-      window.location.reload();
+      presetGol();
+      //window.location.reload();
+
+      /** 
       try {
         console.log(url1)       
         const resposta = await fetch(url1);
@@ -613,7 +676,7 @@ async function llencaGrafisme(){
         alert("Error al obtener los datos de vMix:\n"+ error);
         return
       }
-      alert('Grafisme Targeta actualitzat!');
+      alert('Grafisme Targeta actualitzat!');*/
       break;
     case 'lesio':
       break;
