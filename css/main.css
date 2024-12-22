@@ -3,8 +3,7 @@
 }
 
 :root {
-
-  font-size: 16px;
+  font-size: 12px; /* 25% menos */
   font-family: Roboto;
   --color-800: #6A1B9A;
   --color-600: #8E24AA;
@@ -16,10 +15,9 @@
   --accent-400: #D500F9;
   --md-ref-typeface-brand: 'Open Sans';
   --md-ref-typeface-plain: system-ui;
-  --md-sys-typescale-body-large-font: 400 20px 'Open Sans';
-
-  --md-sys-color-surface: #CE93D8;
-  --md-sys-color-primary: #6A1B9A;
+  --md-sys-typescale-body-large-font: 400 15px 'Open Sans'; /* 25% menos */
+  --md-sys-color-surface: var(--color-200); /* Asegurar uso del color original */
+  --md-sys-color-primary: var(--color-800); /* Asegurar uso del color original */
   --md-primary-tab-icon-color: white;
 }
 
@@ -30,11 +28,11 @@
 }
 
 header {
-  background-color: #CE93D8;
+  background-color: var(--md-sys-color-surface); /* Asegurar color */
 }
 
 nav {
-  width: 50%;
+  width: 50%; /* Mantiene el ancho */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -42,22 +40,21 @@ nav {
 
 body {
   margin: 0;
-  min-height: 100dvh;
+  min-height: 75dvh; /* 25% menos */
   display: flex;
   flex-direction: column;
 }
 
 h1 {
-  background-color: var(--color-800);
+  background-color: var(--md-sys-color-primary); /* Color original */
   color: white;
   text-align: center;
-  height:fit-content;
-
+  height: fit-content;
   margin: 0;
 }
 
 h2 {
-  margin: 10px;
+  margin: 7.5px; /* 25% menos */
 }
 
 .row {
@@ -71,12 +68,8 @@ h2 {
   gap: 0.3em;
 }
 
-.gap1{
-  gap: 2em;
-}
-
 .gap1 {
-  gap: 1em;
+  gap: 0.75em; /* 25% menos en vertical */
 }
 
 .lightRound {
@@ -93,14 +86,14 @@ h2 {
 
 .alignCenter {
   align-self: center;
- }
+}
 
 .sizeBig {
-  font-size: 26px;
+  font-size: 19.5px; /* 25% menos */
 }
 
 .sizeBigger {
-  font-size: 38px;
+  font-size: 28.5px; /* 25% menos */
 }
 
 .justifyCenter {
@@ -108,29 +101,29 @@ h2 {
 }
 
 article {
-  min-height: 100%;
+  min-height: 75%; /* 25% menos */
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
 }
 
 main div {
-  padding: 10px;
+  padding: 7.5px; /* 25% menos en altura */
 }
 
 .meitatHoritzontal {
-  width: 50%;
+  width: 50%; /* Mantiene el ancho */
   position: relative;
   margin: 10px;
 }
 
 .dosColors:nth-child(even) {
-  border-radius: 20px;
-  background-color: var(--color-50);
+  border-radius: 15px; /* 25% menos */
+  background-color: var(--color-50); /* Asegurar color */
 }
 
 #connexioVMIX {
-  margin-top: 10px;
+  margin-top: 7.5px; /* 25% menos */
   display: inline-flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -141,13 +134,13 @@ main div {
 }
 
 #configuracioEscenes li {
-  margin-top: 10px;
+  margin-top: 7.5px; /* 25% menos */
 }
 
 .final {
   position: absolute;
   right: 20px;
-  bottom: 20px;
+  bottom: 15px; /* 25% menos */
 }
 
 #graellaEquips {
@@ -161,16 +154,16 @@ main div {
 .tarjaEquip {
   background-color: white;
   padding: 0;
-  width: 20vw;
-  border-radius: 20px;
+  width: 20vw; /* Mantiene el ancho */
+  border-radius: 15px; /* 25% menos */
   overflow: hidden;
   display: flex;
   gap: 15px;
 }
 
 .tarjaEquip img {
-  width: 8vh;
-  height: 8vh;
+  width: 8vh; /* Mantiene el ancho */
+  height: 6vh; /* 25% menos */
   background-color: lightgray;
 }
 
@@ -183,7 +176,7 @@ main div {
   margin: 0;
 }
 
-.tarjaEquip .selfEnd{
+.tarjaEquip .selfEnd {
   margin-left: auto;
   margin-right: 20px;
 }
@@ -191,6 +184,25 @@ main div {
 .alineacio {
   width: 500px;
 }
+
+md-list.alineacio md-list-item {
+  padding: 0; /* Elimina todo el padding */
+  max-height: 30px; /* Limita la altura máxima */
+  line-height: 30px; /* Asegura que el contenido esté centrado verticalmente */
+  display: flex; /* Para un diseño flexible */
+  align-items: center; /* Centra el contenido verticalmente */
+}
+
+md-list.alineacio md-list-item div[slot="start"] {
+  width: 2em; /* Mantiene el ancho definido */
+  font-size: 1em; /* Ajusta el tamaño del texto */
+  font-weight: 800; /* Mantiene el peso de fuente */
+}
+
+md-list.alineacio md-list-item div[slot="headline"] {
+  flex: 1; /* Permite que este slot ocupe el espacio restante */
+}
+
 .wrap {
   flex-wrap: wrap;
 }
@@ -207,19 +219,21 @@ main div {
   padding-top: 0px;
 }
 
-md-list-item{
-  height: 50px;
+md-list-item {
+  height: 37.5px; /* 25% menos */
 }
 
 md-list-item:nth-child(even) {
-  background-color: var(--color-50);
+  background-color: var(--color-50); /* Asegurar color */
 }
 
 #form-accio {
-  padding-top: 8px;
+  padding-top: 6px; /* 25% menos */
 }
 
-md-radio:checked+label{ background-color: #FFFF00; } ​
+md-radio:checked+label {
+  background-color: #FFFF00;
+}
 
 .widthMeitat {
   margin: 1em;
@@ -227,24 +241,33 @@ md-radio:checked+label{ background-color: #FFFF00; } ​
 
 .resum {
   list-style: none;
-  padding: 0;
-  width: 75vh;
+  padding: 10px;
+  width: 75vh; /* Mantiene el ancho */
+  background-color: var(--color-50);
+  border-radius: 30px;
 }
 
-.resum li{
+.resum li {
+  font-size: 14px;
   padding: 0 0 0 2vh;
-  margin-bottom: 2px;
-  height: 2.5em;
+  margin-bottom: 0; /* 25% menos */
+  height: 40px; /* 25% menos */
   display: flex;
+  gap: 2px;
   flex-wrap: wrap;
-  background-color: var(--accent-100);
+  background-color: var(--accent-100); /* Asegurar color */
   align-content: center;
   align-items: center;
-  border-radius: 20px;
+  border-radius: 20px; /* 25% menos */
 }
-.resum li:nth-child(even){
+
+.resum li:nth-child(even) {
   display: flex;
-  background-color: var(--color-50);
+  background-color: var(--color-50); /* Asegurar color */
+}
+
+.timecode {
+  flex: 2;
 }
 
 .icona {
@@ -257,9 +280,12 @@ md-radio:checked+label{ background-color: #FFFF00; } ​
 }
 
 .jugador {
-  flex: 10;
+  flex: 9;
 }
 
 .amaga {
   display: none;
 }
+
+
+

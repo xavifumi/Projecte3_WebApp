@@ -237,7 +237,7 @@ function generaGraellaEquips(){
       <h4>`+ equips.nom +`</h4>
       <p>`+ equips.entrenador +`</p>
     </div>
-    <md-fab id="editEquip`+index+`" onclick="generaDialogEquip(`+index+`)" class="selfEnd alignCenter" size="small" touch-target="none" aria-label="Edit">
+    <md-fab id="editEquip`+index+`" onclick="generaDialogEquip(`+index+`)" class="selfEnd alignCenter small" size="small" touch-target="none" aria-label="Edit">
       <md-icon slot="icon">edit</md-icon>
     </md-fab>`;
     graellaEquips.appendChild(nouElement);
