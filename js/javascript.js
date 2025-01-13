@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   //Resum i dades per a les llistes de selecció.
   resumPartit = localStorage.accions===undefined?[]:JSON.parse(localStorage.accions);
   savedTime = localStorage.savedTime===undefined?"":JSON.parse(localStorage.savedTime);
-  running = JSON.parse(localStorage.running)===1?startTimer():"";
+  running = JSON.parse(localStorage.running)===1?(startTimer(),psTimer.style.display='inline-flex',stTimer.style.display='none'):"";
   obtenirDadesVmix(ipVmix);
   llistaEquips();
   document.getElementById('equipLocal').value = localStorage[0];
