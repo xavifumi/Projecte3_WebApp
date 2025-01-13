@@ -3,7 +3,7 @@
     <head>
         <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
         <link href="./css/main.css" rel="stylesheet" />
-        <title>Pagina Setup - Projecte 3 - Aplicació Interactiva</title>
+        <title>Soccer Control - Projecte 3 - Xavi Fumadó</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
         <script type="importmap">
@@ -23,7 +23,7 @@
     </head>
     <body>
         <header>
-            <h1>vMix Futbol Control - <span id="titolPagina">MAIN</span> </h1>
+            <h1>vMix Soccer Control - <span id="titolPagina">MAIN</span> </h1>
             <nav>
               <md-tabs>
                 <md-primary-tab onclick="pageMain.style.display = 'none'; pageSetup.style.display = 'flex'; pageResum.style.display = 'none'; titolPagina.innerHTML ='SETUP';">
@@ -53,10 +53,10 @@
                   <span data-chronometer>00:00</span>
                 </div>
               </div>
-              <md-fab onclick="startTimer()"; psTimer.style.display='inline-flex'; stTimer.style.display='none' id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
+              <md-fab onclick="startTimer(); psTimer.style.display='inline-flex'; stTimer.style.display='none'" id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
                 <md-icon slot="icon">play_arrow</md-icon>
               </md-fab>
-              <md-fab onclick="pauseTimer()"; psTimer.style.display='none'; stTimer.style.display='inline-flex' id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
+              <md-fab onclick="pauseTimer(); psTimer.style.display='none'; stTimer.style.display='inline-flex'" id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
                 <md-icon slot="icon">pause</md-icon>
               </md-fab>
             </div>

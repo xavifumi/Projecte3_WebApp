@@ -184,7 +184,7 @@ main div {
 .alineacio {
   width: 500px;
 }
-
+/* Les properes tres regles han estat generades via ChatGPT ja que m'ha resultat impossible ajustar d'altra forma l'açada*/
 md-list.alineacio md-list-item {
   padding: 0; /* Elimina todo el padding */
   max-height: 30px; /* Limita la altura máxima */
