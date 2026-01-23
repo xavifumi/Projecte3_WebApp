@@ -7,6 +7,12 @@ var pageMain = document.getElementById('pageMain');
 var pageSetup = document.getElementById('pageSetup');
 var pageResum = document.getElementById('pageResum');
 var titolPagina = document.getElementById('titolPagina');
+const imageInput = document.getElementById('imageInput');
+const previewImage = document.getElementById('previewImage');
+const uploadIcon = document.getElementById('uploadIcon');
+const uploadContainer = document.getElementById('uploadContainer');
+
+let imatgeSeleccionada = null; // Aquí desarem el fitxer seleccionat o la seva URL
 
 //Variables Crono
 var startTime;
@@ -34,6 +40,24 @@ targetes[0] = {};
 targetes[1] = {};
 var accio = "gol";
 
+// Obrir el selector de fitxers en clicar l’àrea
+  imageInput.addEventListener('change', () => {
+    if (imageInput.files.length === 0) return;
+
+    const file = imageInput.files[0];
+
+    if (!file.type.startsWith('image/')) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImage.src = e.target.result;
+      previewImage.style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+
 //Elements html que generem via codi (exclosos els que inserten variables ja que no estan declarades encara):
 var htmlAfegirJugador = `<md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1">
 </md-outlined-text-field>
@@ -48,8 +72,20 @@ var htmlAfegirJugadorNoCheck = `<md-outlined-text-field class="dorsal" label="Do
 
 var htmlDialogCreaEquip = `<md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5">
 </md-outlined-text-field>
-<md-outlined-text-field id="abreviEquip" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
-</md-outlined-text-field>
+<div class="abreviatura" slot="headline">
+  <md-outlined-text-field id="abreviEquip"  label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
+  </md-outlined-text-field>
+
+  <div class="image-upload" id="uploadContainer">
+    <!-- Aquesta icona es mostrarà si no hi ha imatge -->
+    <md-filled-button class="final" onclick="dialogAfegirEquip.show()">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
+    <!-- Aquesta imatge es mostrarà quan se seleccioni una -->
+    <img id="previewImage" class="image-preview" style="display: none;" />
+  </div>
+</div>
+<!-- Input per seleccionar  imatge (ocult) -->
+<input type="file" id="imageInput" accept="image/*" />
+
 <form slot="content" id="form-jugadors" method="dialog" class="flex column gap1"> 
   <md-outlined-text-field id="nomEntrenador" label="Entrenador" value="Entrenador" type="text" minlength="5">
   </md-outlined-text-field>
@@ -72,6 +108,15 @@ var htmlDialogEditaEquip = `<md-outlined-text-field id="nomEquipEditar" slot="he
 </md-outlined-text-field>
 <md-outlined-text-field id="abreviEquipEditar" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
 </md-outlined-text-field>
+<div class="image-upload" id="uploadContainer">
+  <!-- Aquesta icona es mostrarà si no hi ha imatge -->
+  <md-filled-button class="final" onclick="dialogAfegirEquip.show()">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
+  <!-- Aquesta imatge es mostrarà quan se seleccioni una -->
+  <img id="previewImage" class="image-preview" style="display: none;" />
+</div>
+
+<!-- Input per seleccionar  imatge (ocult) -->
+<input type="file" id="imageInput" accept="image/*" />
 <form slot="content" id="form-editar" method="dialog" class="flex column gap1"> 
   <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)">
   </md-outlined-text-field> 
@@ -110,6 +155,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document.getElementById('equipVisitant').value = localStorage[1];
   seleccioEquips(1);
   generaGraellaResum();
+  uploadContainer.addEventListener('click', () => {
+    imageInput.click();
+    console.log("boto apretat")
+  });
+
+  imageInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      imatgeSeleccionada = URL.createObjectURL(file);
+
+      // Amagar la icona i mostrar la imatge
+      uploadIcon.style.display = 'none';
+      previewImage.src = imatgeSeleccionada;
+      previewImage.style.display = 'block';
+
+      // Si ho vols per enviar al servidor, pots usar també el `file` directament
+      console.log('Fitxer seleccionat:', file);
+    }
+  });
 
 });
 

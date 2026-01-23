@@ -3,7 +3,7 @@
     <head>
         <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
         <link href="./css/main.css" rel="stylesheet" />
-        <title>Soccer Control - Projecte 3 - Xavi Fumadó</title>
+        <title>Soccer Control for VMIX- FOCUS - Xavi Fumadó</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
         <script type="importmap">
@@ -22,6 +22,12 @@
 
     </head>
     <body>
+
+        <!-- 
+          @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+          @@@@@@@@@@@@@@@@@@@@@@@@@@ BARRA SUPERIOR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+          @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        -->
         <header>
             <h1>vMix Soccer Control - <span id="titolPagina">MAIN</span> </h1>
             <nav>
@@ -301,8 +307,27 @@
         <md-dialog id="afegirEquip">
           <md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip"  type="text" minlength="5" required>
           </md-outlined-text-field>
-          <md-outlined-text-field id="abreviEquip" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase" required>
-          </md-outlined-text-field>
+          
+          <div class="abreviatura" slot="headline">
+            <md-outlined-text-field id="abreviEquip" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
+            </md-outlined-text-field>
+            <img id="previewImage" class="image-preview" style="display: none;" />
+            <div class="image-upload" id="uploadContainer">
+              <!-- Aquesta icona es mostrarà si no hi ha imatge -->
+              <md-fab size="small" class="final" onclick="document.getElementById('imageInput').click()">
+                <md-icon slot="icon">image</md-icon>
+              </md-fab>
+              <!-- Aquesta imatge es mostrarà quan se seleccioni una -->
+            </div>
+          </div>
+
+          <input
+            type="file"
+            id="imageInput"
+            accept="image/*"
+            style="display:none"
+          />
+          
           <form slot="content" id="form-equip"  class="flex column gap1"> 
             <md-outlined-text-field id="nomEntrenador" label="Entrenador"  type="text" minlength="5" required>
             </md-outlined-text-field>
