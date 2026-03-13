@@ -331,19 +331,19 @@
           <form slot="content" id="form-equip"  class="flex column gap1"> 
             <md-outlined-text-field id="nomEntrenador" label="Entrenador"  type="text" minlength="5" required>
             </md-outlined-text-field>
-            <div class="flex row introJugador" id="llistaJugadors">
+            <div class="flex row introJugador llistaJugadors" >
               <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" oninput="validarDorsal(this)">
               </md-outlined-text-field>
               <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1" oninput="validarNomPropi(this)">
               </md-outlined-text-field>
             </div>
-            <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-jugadors')">
+            <md-filled-button id="botoAfegirNouJugadorEquip" type="button" onclick="afegirJugador('form-equip')">
               Afegeix
               <md-icon slot="icon">add</md-icon>
             </md-filled-button>
           </form>
           <div slot="actions">
-            <md-text-button type= "submit" id="accept" form="form-equip" >Ok</md-text-button>
+            <md-text-button type="button" id="accept" onclick="desaEquip()">Ok</md-text-button>
             <md-text-button form="form-equip" onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
           </div>
         </md-dialog>
@@ -354,12 +354,31 @@
   <md-dialog id="editarEquip">
     <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5"required>
     </md-outlined-text-field>
-    <md-outlined-text-field id="abreviEquipEditar" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase"required >
-    </md-outlined-text-field>
+    <div class="abreviatura" slot="headline"></div>
+      <md-outlined-text-field id="abreviEquipEditar" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase"required >
+      </md-outlined-text-field>
+
+      <img id="previewImageEditar" class="image-preview" style="display: none;" />
+      <div class="image-upload" id="uploadContainer">
+        <!-- Aquesta icona es mostrarà si no hi ha imatge -->
+        <md-fab size="small" class="final" onclick="document.getElementById('imageInput').click()">
+          <md-icon slot="icon">image</md-icon>
+        </md-fab>
+        <!-- Aquesta imatge es mostrarà quan se seleccioni una -->
+      </div>
+    </div>
+
+    <input
+      type="file"
+      id="imageInput"
+      accept="image/*"
+      style="display:none"
+    />
+
     <form slot="content" id="form-editar" class="flex column gap1"> 
       <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)" required>
       </md-outlined-text-field> 
-      <div class="flex row introJugador" id="llistaJugadors">
+      <div class="flex row introJugador llistaJugadors" >
         <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" pattern="\\d+" oninput="validarDorsal(this)">
         </md-outlined-text-field>
         <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="2" oninput="validarNomPropi(this)">

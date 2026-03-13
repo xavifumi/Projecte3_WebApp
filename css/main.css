@@ -182,16 +182,20 @@ main div {
 
 #graellaEquips {
   width: 100%;
+  height: 100%;
   gap: 10px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  justify-content:flex-start ;
+  overflow:auto;
 }
 
 .tarjaEquip {
   background-color: white;
   padding: 0;
-  width: 20vw; /* Mantiene el ancho */
+  width: 100%; /* Mantiene el ancho */
+  height: fit-content;
   border-radius: 15px; /* 25% menos */
   overflow: hidden;
   display: flex;
@@ -204,7 +208,7 @@ main div {
   background-color: lightgray;
 }
 
-.tarjaEquip div {
+.tarjaEquip .nomFitxaEquip {
   height: fit-content;
   margin: auto 0;
 }
@@ -215,7 +219,7 @@ main div {
 
 .tarjaEquip .selfEnd {
   margin-left: auto;
-  margin-right: 20px;
+  margin-right: 4px;
 }
 
 .alineacio {
