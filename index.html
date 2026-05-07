@@ -1,456 +1,479 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet" />
-        <link href="./css/main.css" rel="stylesheet" />
-        <title>Soccer Control for VMIX- FOCUS - Xavi Fumadó</title>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
-        <script type="importmap">
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="./css/main.css" rel="stylesheet" />
+  <title>Soccer Control for VMIX- FOCUS - Xavi Fumadó</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+  <script type="importmap">
           {
             "imports": {
               "@material/web/": "https://esm.run/@material/web/"
             }
           }
         </script>
-        <script type="module">
-          import '@material/web/all.js';
-          import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
-      
-          document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
-        </script>
+  <script type="module">
+    import '@material/web/all.js';
+    import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
 
-    </head>
-    <body>
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+  </script>
 
-        <!-- 
+</head>
+
+<body>
+
+  <!-- 
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@ BARRA SUPERIOR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         -->
-        <header>
-            <h1>vMix Soccer Control - <span id="titolPagina">MAIN</span> </h1>
-            <nav>
-              <md-tabs>
-                <md-primary-tab onclick="pageMain.style.display = 'none'; pageSetup.style.display = 'flex'; pageResum.style.display = 'none'; titolPagina.innerHTML ='SETUP';">
-                  <md-icon slot="icon">settings</md-icon>
-                  Setup</md-primary-tab>
-                <md-primary-tab active onclick="pageMain.style.display = 'flex'; pageSetup.style.display = 'none'; pageResum.style.display = 'none'; titolPagina.innerHTML ='MAIN';">
-                  <md-icon slot="icon">star</md-icon>
-                  Partit</md-primary-tab>
-                <md-primary-tab onclick="pageMain.style.display = 'none'; pageSetup.style.display = 'none'; pageResum.style.display = 'flex'; titolPagina.innerHTML ='RESUM';">
-                  <md-icon slot="icon">history</md-icon>
-                  Resum</md-primary-tab>
-              </md-tabs>
-            </nav>
-        </header>
-        <main>
+  <header>
+    <h1>vMix Soccer Control - <span id="titolPagina">MAIN</span> </h1>
+    <nav>
+      <md-tabs id="mainNavTabs">
+        <md-primary-tab id="tabSetup"
+          onclick="pageMain.style.display = 'none'; pageSetup.style.display = 'flex'; pageResum.style.display = 'none'; titolPagina.innerHTML ='SETUP';">
+          <md-icon slot="icon">settings</md-icon>
+          Setup</md-primary-tab>
+        <md-primary-tab active id="tabMain"
+          onclick="pageMain.style.display = 'flex'; pageSetup.style.display = 'none'; pageResum.style.display = 'none'; titolPagina.innerHTML ='MAIN';">
+          <md-icon slot="icon">star</md-icon>
+          Partit</md-primary-tab>
+        <md-primary-tab id="tabResum"
+          onclick="pageMain.style.display = 'none'; pageSetup.style.display = 'none'; pageResum.style.display = 'flex'; titolPagina.innerHTML ='RESUM';">
+          <md-icon slot="icon">history</md-icon>
+          Resum</md-primary-tab>
+      </md-tabs>
+    </nav>
+  </header>
+  <main>
 
-          <!-- 
+    <!-- 
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@ PAG MAIN @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         -->
 
-          <article id="pageMain">
-            <div class="flex row alignCenter sizeBig">
-              <div id="temps" >
-                <div id="timer" class="lightRound outlined">
-                  <span data-chronometer>00:00</span>
-                </div>
-              </div>
-              <md-fab onclick="startTimer(); psTimer.style.display='inline-flex'; stTimer.style.display='none'" id="play" class="alignCenter" size="small" touch-target="none" aria-label="Play timer">
-                <md-icon slot="icon">play_arrow</md-icon>
-              </md-fab>
-              <md-fab onclick="pauseTimer(); psTimer.style.display='none'; stTimer.style.display='inline-flex'" id="pause" class="alignCenter" size="small" touch-target="none" aria-label="Pause timer" style="display: none;">
-                <md-icon slot="icon">pause</md-icon>
-              </md-fab>
-            </div>
-            <div id="equips" class="row alignCenter sizeBig ">
-              <!--
-
+    <article id="pageMain">
+      <div id="equips" class="row alignCenter sizeBig" style="position: relative; justify-content: center;">
+        <!--
                 <div id="equip1" class="lightRound outlined flex">
                   <span class="alignCenter">Nom Equip 1</span>
                 </div>
               -->
-              <md-fab onclick=""; id="editarEquip0" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
-                <md-icon slot="icon">person_add</md-icon>
-              </md-fab>
-              <md-outlined-select id="equipLocal" label="Equip Local" onchange="seleccioEquips('0')">
-              </md-outlined-select>
-              <div id="resultat" class="lightRound outlined sizeBigger">
-                <span>0 - 0</span>
-              </div>
-              <!--
-                <div id="equip2" class="lightRound outlined flex">
-                  <span class="alignCenter">Nom Equip 2</span>
-                </div>
-              -->
-              <md-outlined-select id="equipVisitant" label="Equip Visitant" onchange="seleccioEquips('1')">
-              </md-outlined-select>
-              <md-fab onclick=""; id="editarEquip1" class="alignCenter" size="small" touch-target="none" aria-label="Edita jugadors seleccionats">
-                <md-icon slot="icon">person_add</md-icon>
-              </md-fab>
-            </div>
-            <div class="row" style="margin-top: 0; padding-top: 0;">
-              <div class="meitatHoritzontal flex column wrap alignEnd" style="margin-top: 0; padding-top: 0;">
-                <p id="entrenador0">Entrenador</p>
-                <md-list class="alineacio" id="alineacio0" >
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                </md-list>
-                <md-filled-button id="buttonAccio0" class="widthMeitat" disabled onclick="
-                document.getElementById('selectAccioEquip0').checked = true; 
-                filtraJugadorsAccio('llistaJugadorsEquip0');dialog.querySelector('[type=submit]').onclick=function(){desaAccio()};
-                dialog.show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
-  
-              </div>
-              <div class="meitatHoritzontal flex column wrap aligStart" style="margin-top: 0; padding-top: 0;">
-                <p id="entrenador1" >Entrenador</p>
-                <md-list class="alineacio" id="alineacio1" >
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                  <md-list-item>
-                    <div slot="headline"></div>
-                    <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
-                  </md-list-item>
-                </md-list>
-                <md-filled-button id="buttonAccio1" class="widthMeitat" disabled onclick="
-                document.getElementById('selectAccioEquip1').checked = true;dialog.querySelector('[type=submit]').onclick=function(){desaAccio()};
-                filtraJugadorsAccio('llistaJugadorsEquip1');
-                document.getElementById('afegirAccio').show()">Afegir acció<md-icon slot="icon">add</md-icon></md-filled-button>
-              </div>
-            </div>
-          </article>
+        <div class="flex row gap1 alignCenter"
+          style="position: absolute; left: 15px; z-index: 20; background: var(--surface-hover); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--surface-border);">
+          <md-fab id="nouPartitBtn" onclick="resetNouPartit()" size="small" aria-label="Nuevo Partido">
+            <md-icon slot="icon">fiber_new</md-icon>
+          </md-fab>
+          <md-fab id="play" onclick="startTimer(); psTimer.style.display='inline-flex'; stTimer.style.display='none'"
+            size="small" aria-label="Play timer">
+            <md-icon slot="icon">play_arrow</md-icon>
+          </md-fab>
+          <md-fab id="pause" onclick="pauseTimer(); psTimer.style.display='none'; stTimer.style.display='inline-flex'"
+            size="small" aria-label="Pause timer" style="display: none;">
+            <md-icon slot="icon">pause</md-icon>
+          </md-fab>
+          <md-fab id="togglePartBtn" onclick="togglePart()" size="small" aria-label="Alternar 1a/2a Parte">
+            <md-icon slot="icon">looks_one</md-icon>
+          </md-fab>
+        </div>
 
-          <!-- 
+        <md-fab id="editarEquip0" class="alignCenter" size="small" touch-target="none"
+          aria-label="Edita jugadors seleccionats" onclick="obreDialogEdita(0)" disabled>
+          <md-icon slot="icon">person_add</md-icon>
+        </md-fab>
+        <md-outlined-select id="equipLocal" label="Equip Local" onchange="seleccioEquips('0')">
+        </md-outlined-select>
+        <div class="flex column alignCenter">
+          <div class="row alignCenter">
+            <img id="logoLocalMain"
+              style="width: 50px; height: 50px; object-fit: contain; visibility: hidden; margin-right: 15px;">
+            <div id="resultat" class="lightRound outlined sizeBigger" style="margin-bottom: 5px;">
+              <span>0 - 0</span>
+            </div>
+            <img id="logoVisitantMain"
+              style="width: 50px; height: 50px; object-fit: contain; visibility: hidden; margin-left: 15px;">
+          </div>
+          <div id="temps" style="font-size: 0.8em;">
+            <div id="timer" class="lightRound outlined"
+              style="padding: 2px 15px; font-size: 1.6rem; min-height: unset; border: none; box-shadow: none;">
+              <span data-chronometer>00:00</span>
+            </div>
+          </div>
+        </div>
+        <md-outlined-select id="equipVisitant" label="Equip Visitant" onchange="seleccioEquips('1')">
+        </md-outlined-select>
+        <md-fab id="editarEquip1" class="alignCenter" size="small" touch-target="none"
+          aria-label="Edita jugadors seleccionats" onclick="obreDialogEdita(1)" disabled>
+          <md-icon slot="icon">person_add</md-icon>
+        </md-fab>
+      </div>
+      <div class="row" style="margin-top: 0; padding-top: 0;">
+        <div class="meitatHoritzontal flex column wrap alignEnd" style="margin-top: 0; padding-top: 0;">
+          <p id="entrenador0">Entrenador</p>
+          <md-list class="alineacio" id="alineacio0">
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+          </md-list>
+          <md-filled-button id="buttonAccio0" class="widthMeitat" disabled onclick="obreDialogAccio(0)">
+            Afegir acció<md-icon slot="icon">add</md-icon>
+          </md-filled-button>
+
+        </div>
+        <div class="meitatHoritzontal flex column wrap aligStart" style="margin-top: 0; padding-top: 0;">
+          <p id="entrenador1">Entrenador</p>
+          <md-list class="alineacio" id="alineacio1">
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+            <md-list-item>
+              <div slot="headline"></div>
+              <div slot="start" style="width: 2em; font-size: 1.2em; font-weight: 800;"></div>
+            </md-list-item>
+          </md-list>
+          <md-filled-button id="buttonAccio1" class="widthMeitat" disabled onclick="obreDialogAccio(1)">
+            Afegir acció<md-icon slot="icon">add</md-icon>
+          </md-filled-button>
+        </div>
+      </div>
+    </article>
+
+    <!-- 
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@ PAG SETUP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         -->
 
 
-          <article id="pageSetup" style="display: none;">
-            <div class="row">
-              <div class="meitatHoritzontal dosColors">
-                  <h2>Configuració vMix:</h2>
-                  <md-divider></md-divider>
-                  <div id="connexioVMIX">
-                      <md-outlined-text-field label="IP vMix" id="inputIpVmix" value="" type="text" minlength="7" size="15" pattern="^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"                      >
-                      </md-outlined-text-field>
-                      <md-fab id="acceptConnection" class="alignCenter" size="small" touch-target="none" aria-label="Check" onclick="ipVmix=document.getElementById('inputIpVmix').value;obtenirDadesVmix(ipVmix);">
-                          <md-icon slot="icon">check</md-icon>
-                      </md-fab>
-                  </div>
-                  <div id="configuracioEscenes">
-                      <p>Sel·lecció d'escenes:</p>
-                      <ul>
-                          <li>
-                              <md-outlined-select label="Grafisme alineació">
-                                </md-outlined-select>
-                          </li>
-                          <li>
-                              <md-outlined-select label="Grafisme Gol">
-                                </md-outlined-select>
-                          </li>
-                          <li>
-                              <md-outlined-select label="Grafisme Targeta">
-                                </md-outlined-select>
-                          </li>
-                          <li>
-                              <md-outlined-select label="Grafisme Canvi">
-                                </md-outlined-select>
-                          </li>
-                          <li>
-                              <md-outlined-select label="Grafisme final">
-                                </md-outlined-select>
-                          </li>
-                          <li>
-                            <md-outlined-select label="Mosca partit">
-                              </md-outlined-select>
-                        </li>
-                      </ul>
-                    </div>
-                    <md-filled-button class="final" onclick="desaDadesVmix()">Desa<md-icon slot="icon">save</md-icon></md-filled-button>
-              </div>
-              <div class="meitatHoritzontal dosColors">
-                  <h2>Configuració Equips:</h2>
-                  <md-divider></md-divider>
-                  <div id="graellaEquips">
-                  </div>
-                  <md-filled-button class="final" onclick="dialogAfegirEquip.show()">Afegeix<md-icon slot="icon">add</md-icon></md-filled-button>
-              </div>
+    <article id="pageSetup" style="display: none;">
+      <div class="row">
+        <div class="meitatHoritzontal dosColors">
+          <h2>Configuració vMix:</h2>
+          <md-divider></md-divider>
+          <div id="connexioVMIX">
+            <div class="row alignCenter" style="gap: 15px;">
+              <md-outlined-text-field label="IP vMix" id="inputIpVmix" value="" type="text" minlength="7" size="15"
+                pattern="^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$">
+              </md-outlined-text-field>
+              <md-outlined-text-field label="Ruta Logos vMix (C:/...)" id="inputPathLogos" value="" type="text" placeholder="C:/Imatges/" style="flex: 1;"></md-outlined-text-field>
+              <md-fab id="acceptConnection" class="alignCenter" size="small" touch-target="none" aria-label="Check"
+                onclick="ipVmix=document.getElementById('inputIpVmix').value;obtenirDadesVmix(ipVmix);">
+                <md-icon slot="icon">check</md-icon>
+              </md-fab>
             </div>
-          </article>
-          <script>
+          </div>
+          <div id="configuracioEscenes">
+            <p>Sel·lecció d'escenes:</p>
+            <ul>
+              <li>
+                <md-outlined-select label="Grafisme alineació" id="selGrafismeAlineacio" name="grafismeAlineacio">
+                </md-outlined-select>
+              </li>
+              <li>
+                <md-outlined-select label="Grafisme Gol" id="selGrafismeGol" name="grafismeGol">
+                </md-outlined-select>
+              </li>
+              <li>
+                <md-outlined-select label="Grafisme Targeta" id="selGrafismeTargeta" name="grafismeTargeta">
+                </md-outlined-select>
+              </li>
+              <li>
+                <md-outlined-select label="Grafisme Canvi" id="selGrafismeCanvi" name="grafismeCanvi">
+                </md-outlined-select>
+              </li>
+              <li>
+                <md-outlined-select label="Grafisme final" id="selGrafismeFinal" name="grafismeFinal">
+                </md-outlined-select>
+              </li>
+              <li>
+                <md-outlined-select label="Mosca partit" id="selMoscaPartit" name="moscaPartit">
+                </md-outlined-select>
+              </li>
+            </ul>
+          </div>
+          <md-filled-button class="final" onclick="desaDadesVmix()">Desa<md-icon
+              slot="icon">save</md-icon></md-filled-button>
+        </div>
+        <div class="meitatHoritzontal dosColors">
+          <h2>Configuració Equips:</h2>
+          <md-divider></md-divider>
+          <div id="graellaEquips">
+          </div>
+          <md-filled-button class="final" onclick="obreDialogNouEquip()">Afegeix<md-icon
+              slot="icon">add</md-icon></md-filled-button>
+        </div>
+      </div>
+    </article>
+    <script>
+    </script>
 
-            
-          </script>
-
-          <!-- 
+    <!-- 
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@ PAG RESUM @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         -->
 
-          <article id="pageResum" style="display: none;">
-            <div id="temps" class="row alignCenter sizeBig">
-              <div id="timer" class="lightRound outlined">
-                  <span data-chronometer>00:00</span>
-                </div>
-          </div>
-          <div id="equips" class="row alignCenter sizeBig ">
-            <div id="equip1" class="lightRound outlined flex">
-              <span class="alignCenter">Nom Equip 1</span>
-            </div>
-            <div id="resultat" class="lightRound outlined sizeBigger">
-              <span>0 - 0</span>
-            </div>
-            <div id="equip2" class="lightRound outlined flex">
-              <span class="alignCenter">Nom Equip 2</span>
-            </div>
-          </div>
-          <div class="flex alignCenter">
-            <ul class="resum flex column" id="graellaResum">
-            </ul>
-          </div>
-            </article>
+    <article id="pageResum" style="display: none;">
+      <div id="temps" class="row alignCenter sizeBig">
+        <div id="timer" class="lightRound outlined">
+          <span data-chronometer>00:00</span>
+        </div>
+      </div>
+      <div id="equips" class="row alignCenter sizeBig ">
+        <div id="equip1" class="lightRound outlined flex">
+          <span class="alignCenter">Nom Equip 1</span>
+        </div>
+        <div id="resultat" class="lightRound outlined sizeBigger">
+          <span>0 - 0</span>
+        </div>
+        <div id="equip2" class="lightRound outlined flex">
+          <span class="alignCenter">Nom Equip 2</span>
+        </div>
+      </div>
+      <div class="flex alignCenter">
+        <ul class="resum flex column" id="graellaResum">
+        </ul>
+      </div>
+    </article>
 
-        </main>
+  </main>
 
-        <!-- 
+  <!-- 
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@ DIALOGS @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         -->
 
-        <md-dialog id="afegirEquip">
-          <md-outlined-text-field id="nomEquip" slot="headline" label="Nom Equip"  type="text" minlength="5" required>
-          </md-outlined-text-field>
-          
-          <div class="abreviatura" slot="headline">
-            <md-outlined-text-field id="abreviEquip" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase">
-            </md-outlined-text-field>
-            <img id="previewImage" class="image-preview" style="display: none;" />
-            <div class="image-upload" id="uploadContainer">
-              <!-- Aquesta icona es mostrarà si no hi ha imatge -->
-              <md-fab size="small" class="final" onclick="document.getElementById('imageInput').click()">
-                <md-icon slot="icon">image</md-icon>
-              </md-fab>
-              <!-- Aquesta imatge es mostrarà quan se seleccioni una -->
-            </div>
-          </div>
-
-          <input
-            type="file"
-            id="imageInput"
-            accept="image/*"
-            style="display:none"
-          />
-          
-          <form slot="content" id="form-equip"  class="flex column gap1"> 
-            <md-outlined-text-field id="nomEntrenador" label="Entrenador"  type="text" minlength="5" required>
-            </md-outlined-text-field>
-            <div class="flex row introJugador llistaJugadors" >
-              <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" oninput="validarDorsal(this)">
-              </md-outlined-text-field>
-              <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="1" oninput="validarNomPropi(this)">
-              </md-outlined-text-field>
-            </div>
-            <md-filled-button id="botoAfegirNouJugadorEquip" type="button" onclick="afegirJugador('form-equip')">
-              Afegeix
-              <md-icon slot="icon">add</md-icon>
-            </md-filled-button>
-          </form>
-          <div slot="actions">
-            <md-text-button type="button" id="accept" onclick="desaEquip()">Ok</md-text-button>
-            <md-text-button form="form-equip" onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
-          </div>
-        </md-dialog>
-        <script> 
-          let dialogAfegirEquip = document.getElementById("afegirEquip");
-        </script> 
-
-  <md-dialog id="editarEquip">
-    <md-outlined-text-field id="nomEquipEditar" slot="headline" label="Nom Equip" value="Nom del Equip" type="text" minlength="5"required>
-    </md-outlined-text-field>
-    <div class="abreviatura" slot="headline"></div>
-      <md-outlined-text-field id="abreviEquipEditar" slot="headline" label="Abreviatura Equip"  type="text" minlength="3" maxlength="4" class="abreviatura" style="text-transform:uppercase"required >
+  <md-dialog id="afegirEquip">
+    <div class="fitxaEquipCapcalera" slot="headline">
+      <md-outlined-text-field id="nomEquip" label="Nom Equip" type="text" minlength="5" required>
       </md-outlined-text-field>
-
-      <img id="previewImageEditar" class="image-preview" style="display: none;" />
-      <div class="image-upload" id="uploadContainer">
-        <!-- Aquesta icona es mostrarà si no hi ha imatge -->
-        <md-fab size="small" class="final" onclick="document.getElementById('imageInput').click()">
-          <md-icon slot="icon">image</md-icon>
-        </md-fab>
-        <!-- Aquesta imatge es mostrarà quan se seleccioni una -->
-      </div>
+        <div class="abreviatura">
+          <md-outlined-text-field id="abreviEquip" name="abreviEquip" label="Abreviatura" type="text" minlength="3" maxlength="4" style="text-transform:uppercase"></md-outlined-text-field>
+          <div class="image-upload" id="uploadContainer">
+            <img id="previewImage" class="image-preview" style="display: none;" />
+            <md-icon-button><md-icon>add</md-icon></md-icon-button>
+          </div>
+        </div>
     </div>
 
-    <input
-      type="file"
-      id="imageInput"
-      accept="image/*"
-      style="display:none"
-    />
+    <input type="file" id="imageInput" accept="image/*" style="display:none" />
 
-    <form slot="content" id="form-editar" class="flex column gap1"> 
-      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5" oninput="validarNomPropi(this)" required>
-      </md-outlined-text-field> 
-      <div class="flex row introJugador llistaJugadors" >
-        <md-outlined-text-field class="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1" pattern="\\d+" oninput="validarDorsal(this)">
+    <form slot="content" id="form-equip" class="flex column gap1">
+      <md-outlined-text-field id="nomEntrenador" label="Entrenador" type="text" minlength="5" required>
+      </md-outlined-text-field>
+      <div class="flex row introJugador llistaJugadors">
+        <md-outlined-text-field class="dorsal" name="dorsal" label="Dor." value="" placeholder="00" type="text" minlength="1"
+          pattern="\\d+" oninput="validarDorsal(this)">
         </md-outlined-text-field>
-        <md-outlined-text-field class="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text" minlength="2" oninput="validarNomPropi(this)">
+        <md-outlined-text-field class="jugador" name="jugador" label="Jugador" value="" placeholder="Nom Jugador" type="text"
+          minlength="2" oninput="validarNomPropi(this)">
         </md-outlined-text-field>
-        <md-checkbox touch-target="wrapper" class="seleccionat" onchange="limitarCheckboxes(this)"></md-checkbox>
+        <md-checkbox touch-target="wrapper" class="seleccionat" name="seleccionat" onchange="limitarCheckboxes(this)"></md-checkbox>
       </div>
+    </form>
+    <div slot="actions" style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+      <md-filled-button id="botoAfegirNouJugadorEquip" type="button" onclick="afegirJugador('form-equip')">
+        Afegeix
+        <md-icon slot="icon">add</md-icon>
+      </md-filled-button>
+      <div>
+        <md-text-button type="button" id="accept" onclick="desaEquip()">Ok</md-text-button>
+        <md-text-button form="form-equip" onclick="dialogAfegirEquip.close()">Cancel</md-text-button>
+      </div>
+    </div>
+  </md-dialog>
+  <script>
+    let dialogAfegirEquip = document.getElementById("afegirEquip");
+  </script>
+
+  <md-dialog id="editarEquip">
+    <div class="fitxaEquipCapcalera" slot="headline">
+      <md-outlined-text-field id="nomEquipEditar" label="Nom Equip" value="Nom del Equip" type="text" minlength="5"
+        required>
+      </md-outlined-text-field>
+        <div class="abreviatura">
+          <md-outlined-text-field id="abreviEquipEditar" name="abreviEquipEditar" label="Abreviatura" type="text" minlength="3" maxlength="4" style="text-transform:uppercase" required></md-outlined-text-field>
+          <div class="image-upload" id="uploadContainerEditar">
+            <img id="previewImageEditar" class="image-preview" style="display: none;" />
+            <md-icon-button><md-icon>add</md-icon></md-icon-button>
+          </div>
+        </div>
+    </div>
+
+    <input type="file" id="imageInputEditar" accept="image/*" style="display:none" />
+
+    <form slot="content" id="form-editar" class="flex column gap1">
+      <md-outlined-text-field id="nomEntrenadorEditar" label="Entrenador" value="Entrenador" type="text" minlength="5"
+        oninput="validarNomPropi(this)" required>
+      </md-outlined-text-field>
+      <div class="flex row introJugador llistaJugadors">
+        <md-outlined-text-field class="dorsal" name="dorsalEditar" label="Dor." value="" placeholder="00" type="text" minlength="1"
+          pattern="\\d+" oninput="validarDorsal(this)">
+        </md-outlined-text-field>
+        <md-outlined-text-field class="jugador" name="jugadorEditar" label="Jugador" value="" placeholder="Nom Jugador" type="text"
+          minlength="2" oninput="validarNomPropi(this)">
+        </md-outlined-text-field>
+        <md-checkbox touch-target="wrapper" class="seleccionat" name="seleccionatEditar" onchange="limitarCheckboxes(this)"></md-checkbox>
+      </div>
+    </form>
+    <div slot="actions" style="width:100%; display:flex; justify-content:space-between; align-items:center;">
       <md-filled-button id="botoAfegirNouJugador" type="button" onclick="afegirJugador('form-editar')">
         Afegeix
-        <md-icon slot="icon">add</md-icon></md-filled-button>
-      </form>
-      <div slot="actions">
-        <md-text-button type= "submit" id="accept" form="form-editar" onclick="actualitzaEquip()">Ok</md-text-button>
+        <md-icon slot="icon">add</md-icon>
+      </md-filled-button>
+      <div>
+        <md-text-button type="button" id="accept" form="form-editar" onclick="actualitzaEquip()">Ok</md-text-button>
         <md-text-button form="form-editar" onclick="dialogEditarEquip.close()">Cancel</md-text-button>
       </div>
-    </md-dialog>
-    <script> 
-      let dialogEditarEquip = document.getElementById("editarEquip")
-    </script>
-    
-    
-    <md-dialog id="afegirAccio">
-      <md-tabs slot="headline" id="tabsAccio">
-        <md-primary-tab onclick="presetGol()">
-          <span slot="icon">⚽</span>
-          Gol
-        </md-primary-tab>
-        <md-primary-tab onclick="presetTargeta()">
-          <span slot="icon">🟨</span>
-          Targeta
-        </md-primary-tab>
-        <md-primary-tab onclick="presetCanvi()">
-          <span slot="icon">🔃</span>
-          Canvi
-        </md-primary-tab>
-        <md-primary-tab onclick="presetLesio()">
-          <span slot="icon">🚑</span>
-          Lesió
-        </md-primary-tab>
-      </md-tabs>
-            <form slot="content" id="form-accio" method="dialog" >
-              <div class="flex column gap1">
-                <div>
-                  <md-radio id="selectAccioEquip0" name="selectEquipAccio" value="0" aria-label="Acció de equip local"  onclick="filtraJugadorsAccio('llistaJugadorsEquip0')"></md-radio>
-                    <label for="selectAccioEquip0">Equip 1</label>
-                </div>
-                <div>
-                  <md-radio id="selectAccioEquip1" name="selectEquipAccio" value="1" aria-label="Acció de equip visitant" onclick="filtraJugadorsAccio('llistaJugadorsEquip1')"></md-radio>
-                  <label for="selectAccioEquip1">Equip 2</label>        
-                </div>
-                <md-outlined-select label="Sel·lecciona jugador" id="selectJugador1" class="selectJugador">
-                  
-                </md-outlined-select>
+    </div>
+  </md-dialog>
+  <script>
+    let dialogEditarEquip = document.getElementById("editarEquip")
+  </script>
 
-                <md-outlined-select label="Jugador sortida" id="selectJugador2" class="selectJugador amaga">
-                  
-                </md-outlined-select>
-                <div>
-                  <md-radio id="selectTargetaGroga" class="selectTargeta amaga" name="selectTargeta" value="1" aria-label="Targeta groga" onclick=""></md-radio>
-                    <label for="selectTargetaGroga" class="selectTargeta amaga">Tarja Groga</label>
-                </div>
-                <div>
-                  <md-radio id="selectTargetaVermella" class="selectTargeta amaga" name="selectTargeta" value="2" aria-label="Targeta vermella" onclick=""></md-radio>
-                  <label for="selectTargetaVermella" class="selectTargeta amaga">Tarja Vermella</label>        
-                </div>
-              </div>
-            </form>
-            <div slot="actions">
-              <md-text-button form="form-accio" type="submit" onclick="desaAccio()">Ok</md-text-button>
-              <md-text-button form="form-accio" onclick="dialog.close()">Cancel</md-text-button>
-            </div>
-        </md-dialog> 
-        <script> let dialog = document.getElementById("afegirAccio")</script>
-    </body>
-    <script type="application/javascript" src="./js/javascript.js"></script>
+
+  <md-dialog id="afegirAccio">
+    <md-tabs slot="headline" id="tabsAccio">
+      <md-primary-tab onclick="presetGol()">
+        <span slot="icon">⚽</span>
+        Gol
+      </md-primary-tab>
+      <md-primary-tab onclick="presetTargeta()">
+        <span slot="icon">🟨</span>
+        Targeta
+      </md-primary-tab>
+      <md-primary-tab onclick="presetCanvi()">
+        <span slot="icon">🔃</span>
+        Canvi
+      </md-primary-tab>
+      <md-primary-tab onclick="presetLesio()">
+        <span slot="icon">🚑</span>
+        Lesió
+      </md-primary-tab>
+    </md-tabs>
+    <form slot="content" id="form-accio" method="dialog">
+      <div class="flex column gap1">
+        <div>
+          <md-radio id="selectAccioEquip0" name="selectEquipAccio" value="0" aria-label="Acció de equip local"
+            onclick="filtraJugadorsAccio('llistaJugadorsEquip0')"></md-radio>
+          <label for="selectAccioEquip0">Equip 1</label>
+        </div>
+        <div>
+          <md-radio id="selectAccioEquip1" name="selectEquipAccio" value="1" aria-label="Acció de equip visitant"
+            onclick="filtraJugadorsAccio('llistaJugadorsEquip1')"></md-radio>
+          <label for="selectAccioEquip1">Equip 2</label>
+        </div>
+        <md-outlined-select label="Sel·lecciona jugador" id="selectJugador1" class="selectJugador">
+
+        </md-outlined-select>
+
+        <md-outlined-select label="Jugador sortida" id="selectJugador2" class="selectJugador amaga">
+
+        </md-outlined-select>
+        <div>
+          <md-radio id="selectTargetaGroga" class="selectTargeta amaga" name="selectTargeta" value="1"
+            aria-label="Targeta groga" onclick=""></md-radio>
+          <label for="selectTargetaGroga" class="selectTargeta amaga">Tarja Groga</label>
+        </div>
+        <div>
+          <md-radio id="selectTargetaVermella" class="selectTargeta amaga" name="selectTargeta" value="2"
+            aria-label="Targeta vermella" onclick=""></md-radio>
+          <label for="selectTargetaVermella" class="selectTargeta amaga">Tarja Vermella</label>
+        </div>
+      </div>
+    </form>
+    <div slot="actions">
+      <md-text-button form="form-accio" type="submit" onclick="desaAccio()">Ok</md-text-button>
+      <md-text-button form="form-accio" onclick="dialog.close()">Cancel</md-text-button>
+    </div>
+  </md-dialog>
+  <script> let dialog = document.getElementById("afegirAccio")</script>
+</body>
+<script type="application/javascript" src="./js/javascript.js"></script>
+
 </html>
